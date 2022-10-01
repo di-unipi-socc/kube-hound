@@ -35,6 +35,7 @@ def main():
     app.set_config_path(Path(args.config_file))
     app.aquire_application()
     app.parse_application()
+    app.run_analyses()
 
 
 if __name__ == '__main__':

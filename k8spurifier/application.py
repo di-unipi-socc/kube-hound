@@ -1,4 +1,7 @@
 from pathlib import Path
+from typing import List
+from k8spurifier.scheduler import AnalysisScheduler
+from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.frontend.config import ApplicationConfig
 from k8spurifier.frontend.parsers.docker import DockerfileParser
 from k8spurifier.frontend.parsers.kubernetes import KubernetesConfigParser
@@ -9,6 +12,7 @@ from k8spurifier.frontend.parsers.openapi import OpenAPIParser
 class Application:
     def __init__(self, context_path: Path) -> None:
         self.context_path = context_path
+        self.application_objects: List[ApplicationObject] = []
 
     def set_config_path(self, config_path) -> None:
         self.config_path = config_path
@@ -71,5 +75,13 @@ class Application:
         for obj in application_objects:
             logger.debug(obj)
 
+        self.application_objects = application_objects
+
         logger.info(
             f'finished parsing: {len(application_objects)} resulting objects')
+
+    def run_analyses(self):
+        logger.info('running analyses on the application')
+        scheduler = AnalysisScheduler(self.application_objects)
+        scheduler.run_analyses()
+        pass
