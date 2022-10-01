@@ -1,0 +1,78 @@
+metadata:
+  name: Sock shop
+
+repositories:
+  main:
+    git: https://github.com/microservices-demo/microservices-demo.git
+  user:
+    git: https://github.com/microservices-demo/user.git
+  front-end:
+    git: https://github.com/microservices-demo/front-end.git
+  shipping:
+    git: https://github.com/microservices-demo/shipping.git
+  queue-master:
+    git: https://github.com/microservices-demo/queue-master.git
+  orders:
+    git: https://github.com/microservices-demo/orders.git
+  catalogue:
+    git: https://github.com/microservices-demo/catalogue.git
+  payment:
+    git: https://github.com/microservices-demo/payment.git
+  carts:
+    git: https://github.com/microservices-demo/carts.git
+
+deployment:
+  kubernetes:
+    repository: main
+    glob: deploy/kubernetes/manifests/*.yaml
+
+services:
+  - name: carts
+    image: weaveworksdemos/carts:0.4.8
+    repository: carts
+    dockerfile: Dockerfile
+
+  - name: catalogue
+    image: weaveworksdemos/catalogue:0.3.5
+    repository: catalogue
+    dockerfile: docker/catalogue/Dockerfile
+
+  - name: catalogue-db
+    image: weaveworksdemos/catalogue-db:0.3.0
+    repository: catalogue
+    dockerfile: docker/catalogue-db/Dockerfile
+
+  - name: front-end
+    image: weaveworksdemos/front-end:0.3.12
+    repository: front-end
+    dockerfile: Dockerfile
+
+  - name: orders
+    image: weaveworksdemos/orders:0.4.7
+    repository: orders
+    dockerfile: docker/orders/Dockerfile
+  
+  - name: payment
+    image: weaveworksdemos/payment:0.4.3
+    repository: payment
+    dockerfile: docker/payment/Dockerfile
+  
+  - name: queue-master
+    image: weaveworksdemos/queue-master:0.3.1
+    repository: queue-master
+    dockerfile: Dockerfile
+  
+  - name: shipping
+    image: weaveworksdemos/shipping:0.4.8
+    repository: shipping
+    dockerfile: docker/shipping/Dockerfile
+  
+  - name: user
+    image: weaveworksdemos/user:0.4.7
+    repository: user
+    dockerfile: Dockerfile
+  
+  - name: user-db
+    image: weaveworksdemos/user-db:0.3.0
+    repository: user
+    dockerfile: docker/user-db/Dockerfile

@@ -1,0 +1,62 @@
+metadata:
+  name: Online boutique
+
+repositories:
+  main:
+    git: https://github.com/GoogleCloudPlatform/microservices-demo.git
+
+deployment:
+  kubernetes:
+    repository: main
+    glob: kubernetes-manifests/*.yaml
+
+services:
+  - name: emailservice
+    image: emailservice
+    repository: main
+    dockerfile: src/emailservice/Dockerfile
+
+  - name: productcatalogservice
+    image: productcatalogservice
+    repository: main
+    dockerfile: src/productcatalogservice/Dockerfile
+
+  - name: recommendationservice
+    image: recommendationservice
+    repository: main
+    dockerfile: src/recommendationservice/Dockerfile
+
+  - name: shippingservice
+    image: shippingservice
+    repository: main
+    dockerfile: src/shippingservice/Dockerfile
+
+  - name: checkoutservice
+    image: checkoutservice
+    repository: main
+    dockerfile: src/checkoutservice/Dockerfile
+
+  - name: paymentservice
+    image: paymentservice
+    repository: main
+    dockerfile: src/paymentservice/Dockerfile
+
+  - name: currencyservice
+    image: currencyservice
+    repository: main
+    dockerfile: src/currencyservice/Dockerfile
+
+  - name: cartservice
+    image: cartservice
+    repository: main
+    dockerfile: src/cartservice/src/Dockerfile
+
+  - name: frontend
+    image: frontend
+    repository: main
+    dockerfile: src/frontend/Dockerfile
+
+  - name: adservice
+    image: adservice
+    repository: main
+    dockerfile: src/adservice/Dockerfile
