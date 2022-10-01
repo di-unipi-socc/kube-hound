@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "k8s-purifier"
+version = "0.1.0"
+description = "Automatic smell detection and scanning for Kubernetes clusters"
+authors = ["gio54321 <g.dellimmagine@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+PyYAML = "^6.0"
+types-PyYAML = "^6.0.11"
+GitPython = "^3.1.27"
+loguru = "^0.6.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+black = "^22.6.0"
+isort = "^5.10.1"
+flake8 = "^5.0.4"
+bandit = "^1.7.4"
+safety = "^2.1.1"
+mypy = "^0.971"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
