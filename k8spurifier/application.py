@@ -3,6 +3,7 @@ from k8spurifier.frontend.config import ApplicationConfig
 from k8spurifier.frontend.parsers.docker import DockerfileParser
 from k8spurifier.frontend.parsers.kubernetes import KubernetesConfigParser
 from loguru import logger
+from k8spurifier.frontend.parsers.openapi import OpenAPIParser
 
 
 class Application:
@@ -56,6 +57,15 @@ class Application:
                     service_repository, service['dockerfile'], image_name=image_name)
                 dockerfile_objects = dockerfile_parser.parse()
                 for obj in dockerfile_objects:
+                    application_objects.append(obj)
+
+            if 'openapi' in service:
+                openapi_path = service['openapi']
+                openapi_parser = OpenAPIParser(
+                    service_repository, openapi_path)
+                openapi_objects = openapi_parser.parse()
+
+                for obj in openapi_objects:
                     application_objects.append(obj)
 
         for obj in application_objects:
