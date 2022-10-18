@@ -36,7 +36,12 @@ class AnalysisScheduler():
                 if type in self.object_type_mapping:
                     input_objects[type] = self.object_type_mapping[type]
                 else:
-                    logger.warning(f'analysis {analysis_class.analysis_name} required objects '
+                    input_objects[type] = []
+                    logger.warning(f'analysis "{analysis_class.analysis_name}" required objects '
                                    'of type {type} but no one exists in the application')
-
+            logger.info(f'Running "{analysis_class.analysis_name}"')
             analysis.run_analysis(input_objects)
+            logger.info(f'Finished "{analysis_class.analysis_name}"')
+
+        # TODO analysis collection
+        return []
