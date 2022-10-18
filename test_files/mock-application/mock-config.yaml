@@ -1,0 +1,54 @@
+metadata:
+  name: Ms mock application
+
+repositories:
+  main:
+    git: https://github.com/gio54321/ms-mock.git
+
+deployment:
+  kubernetes:
+    repository: main
+    glob: deployment/*.yaml
+
+services:
+  - name: authserver
+    image: gio54321/authserver
+    repository: main
+    dockerfile: src/authserver/Dockerfile
+    openapi: src/authserver/authserver.yaml
+
+  - name: gateway
+    image: gio54321/gateway
+    repository: main
+    dockerfile: src/gateway/Dockerfile
+    openapi: src/gateway/gateway.yaml
+
+  - name: echo1
+    image: gio54321/echo
+    repository: main
+    dockerfile: src/echo/Dockerfile
+    openapi: src/echo/echo.yaml
+
+  - name: echo2
+    image: gio54321/echo
+    repository: main
+    dockerfile: src/echo/Dockerfile
+    openapi: src/echo/echo.yaml
+
+  - name: echo3
+    image: gio54321/echo
+    repository: main
+    dockerfile: src/echo/Dockerfile
+    openapi: src/echo/echo.yaml
+
+  - name: echo4
+    image: gio54321/echo
+    repository: main
+    dockerfile: src/echo/Dockerfile
+    openapi: src/echo/echo.yaml
+
+  - name: echo5
+    image: gio54321/echo
+    repository: main
+    dockerfile: src/echo/Dockerfile
+    openapi: src/echo/echo.yaml
