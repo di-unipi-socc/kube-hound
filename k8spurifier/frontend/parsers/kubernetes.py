@@ -44,7 +44,8 @@ class KubernetesConfigParser(ApplicationParser):
             out_objects.append(ApplicationObject(
                 'kubernetes_config', self.config_file, data={
                     'document_number': i,
-                    'referenced_images': referenced_images
+                    'referenced_images': referenced_images,
+                    'cache': document
                 }))
         return out_objects
 

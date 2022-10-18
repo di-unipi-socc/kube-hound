@@ -18,6 +18,13 @@ class ApplicationObject():
     def get_uuid(self) -> str:
         return self.uuid
 
+    def get_content(self):
+        if not 'cache' in self.data:
+            with open(self.path, 'r') as f:
+                self.data['cache'] = f.read()
+
+        return self.data['cache']
+
     def __repr__(self) -> str:
         return f"ApplicationObject({self.type}, {self.path.name}" + \
             (f", {self.data}" if self.data != {} else "") + ")"
