@@ -22,6 +22,10 @@ class Analysis(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
+    def analysis_description(self) -> str: pass
+
+    @property
+    @abc.abstractmethod
     def analysis_id(self) -> str: pass
 
     @property

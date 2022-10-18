@@ -9,6 +9,7 @@ from k8spurifier.smells import Smell
 class NopAnalysis(Analysis):
     analysis_id = 'S0'
     analysis_name = 'NOP analysis'
+    analysis_description = 'do nothing'
     input_types = ['kubernetes_config', 'dockerfile', 'openapi']
 
     def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
