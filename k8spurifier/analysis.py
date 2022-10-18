@@ -11,7 +11,8 @@ class AnalysisResult:
         self.generating_analysis: str = ''
 
     def __repr__(self) -> str:
-        return f"AnalysisResult({self.generating_analysis}, {self.description}, {self.smells_detected})"
+        return f"AnalysisResult({self.generating_analysis}," + \
+            f" {self.description}, {self.smells_detected})"
 
 
 class Analysis(metaclass=abc.ABCMeta):

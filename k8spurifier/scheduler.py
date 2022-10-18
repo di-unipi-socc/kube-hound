@@ -32,12 +32,12 @@ class AnalysisScheduler():
             analysis = analysis_class()
 
             input_objects = {}
-            for type in analysis_class.input_types:
+            for inp_type in analysis_class.input_types:  # type: ignore
 
-                if type in self.object_type_mapping:
-                    input_objects[type] = self.object_type_mapping[type]
+                if inp_type in self.object_type_mapping:
+                    input_objects[inp_type] = self.object_type_mapping[inp_type]
                 else:
-                    input_objects[type] = []
+                    input_objects[inp_type] = []
                     logger.warning(f'analysis "{analysis_class.analysis_name}" required objects '
                                    'of type {type} but no one exists in the application')
             logger.info(f'Running "{analysis_class.analysis_name}"')

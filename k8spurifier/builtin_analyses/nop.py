@@ -11,7 +11,8 @@ class NopAnalysis(Analysis):
     analysis_name = 'NOP analysis'
     input_types = ['kubernetes_config', 'dockerfile', 'openapi']
 
-    def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) -> List[AnalysisResult]:
+    def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
+            -> List[AnalysisResult]:
         logger.info('running NOP analysis...')
 
         for key in input_objects:
