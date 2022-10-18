@@ -1,14 +1,17 @@
 import abc
 from k8spurifier.applicationobject import ApplicationObject
+from k8spurifier.smells import Smell
 from typing import List, Mapping, Set
 
 
 class AnalysisResult:
-    description = ''
-    smells_detected: Set[str]
+    def __init__(self, description: str, smells_detected: Set[Smell]):
+        self.description = description
+        self.smells_detected = smells_detected
+        self.generating_analysis: str = ''
 
-    def __init__(self):
-        pass
+    def __repr__(self) -> str:
+        return f"AnalysisResult({self.generating_analysis}, {self.description}, {self.smells_detected})"
 
 
 class Analysis(metaclass=abc.ABCMeta):

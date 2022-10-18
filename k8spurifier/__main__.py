@@ -36,6 +36,7 @@ def main():
     app.aquire_application()
     app.parse_application()
     app.run_analyses()
+    app.show_results()
 
 
 if __name__ == '__main__':

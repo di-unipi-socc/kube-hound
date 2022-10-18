@@ -1,5 +1,5 @@
-from typing import Dict, List, Mapping
-from k8spurifier.analysis import AnalysisResult
+from typing import Dict, List, Mapping, Type
+from k8spurifier.analysis import Analysis, AnalysisResult
 from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.builtin_analyses import all_analyses
 from loguru import logger
@@ -12,7 +12,7 @@ class AnalysisScheduler():
             application_objects)
 
         # TODO naming is a bit confusing
-        self.analyses = all_analyses
+        self.analyses: List[Type[Analysis]] = all_analyses
 
     def __compute_type_mapping(self, objects: List[ApplicationObject]) \
             -> Mapping[str, List[ApplicationObject]]:
@@ -27,6 +27,7 @@ class AnalysisScheduler():
         return resulting_mapping
 
     def run_analyses(self) -> List[AnalysisResult]:
+        total_analysis_results = []
         for analysis_class in self.analyses:
             analysis = analysis_class()
 
@@ -40,8 +41,15 @@ class AnalysisScheduler():
                     logger.warning(f'analysis "{analysis_class.analysis_name}" required objects '
                                    'of type {type} but no one exists in the application')
             logger.info(f'Running "{analysis_class.analysis_name}"')
-            analysis.run_analysis(input_objects)
+            analysis_results = analysis.run_analysis(input_objects)
+
+            # inject generating analysis name
+            # and append to the aggregate list
+            analysis_name = analysis.analysis_name
+            for result in analysis_results:
+                result.generating_analysis = analysis_name
+                total_analysis_results.append(result)
+
             logger.info(f'Finished "{analysis_class.analysis_name}"')
 
-        # TODO analysis collection
-        return []
+        return total_analysis_results

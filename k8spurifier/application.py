@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Dict, List, Optional
+from k8spurifier.analysis import AnalysisResult
 from k8spurifier.scheduler import AnalysisScheduler
 from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.frontend.config import ApplicationConfig
@@ -15,6 +16,7 @@ class Application:
         self.context_path = context_path
         self.application_objects: List[ApplicationObject] = []
         self.services: Dict[str, Service] = {}
+        self.analysis_results: List[AnalysisResult] = []
 
     def set_config_path(self, config_path) -> None:
         self.config_path = config_path
@@ -123,5 +125,10 @@ class Application:
     def run_analyses(self):
         logger.info('running analyses on the application')
         scheduler = AnalysisScheduler(self.application_objects)
-        scheduler.run_analyses()
-        pass
+        self.analysis_results = scheduler.run_analyses()
+
+    def show_results(self):
+        print('Analysis results:')
+        for result in self.analysis_results:
+            print(f"{result.generating_analysis} - detected smells {result.smells_detected}\n"
+                  f"\t{result.description}")
