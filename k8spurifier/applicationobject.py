@@ -19,7 +19,7 @@ class ApplicationObject():
         return self.uuid
 
     def get_content(self):
-        if not 'cache' in self.data:
+        if 'cache' not in self.data:
             with open(self.path, 'r') as f:
                 self.data['cache'] = f.read()
 
