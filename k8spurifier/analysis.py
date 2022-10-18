@@ -26,7 +26,7 @@ class Analysis(metaclass=abc.ABCMeta):
 
     @ abc.abstractmethod
     def run_analysis(
-        self, input_objects: Mapping[str, ApplicationObject]) -> List[AnalysisResult]: pass
+        self, input_objects: Mapping[str, List[ApplicationObject]]) -> List[AnalysisResult]: pass
 
     def __repr__(self) -> str:
         return f"Analysis({self.analysis_id}, {self.analysis_name})"
