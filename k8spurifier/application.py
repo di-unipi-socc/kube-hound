@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import Dict, List, Optional
 from k8spurifier.scheduler import AnalysisScheduler
 from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.frontend.config import ApplicationConfig
@@ -7,12 +7,14 @@ from k8spurifier.frontend.parsers.docker import DockerfileParser
 from k8spurifier.frontend.parsers.kubernetes import KubernetesConfigParser
 from loguru import logger
 from k8spurifier.frontend.parsers.openapi import OpenAPIParser
+from k8spurifier.service import Service
 
 
 class Application:
     def __init__(self, context_path: Path) -> None:
         self.context_path = context_path
         self.application_objects: List[ApplicationObject] = []
+        self.services: Dict[str, Service] = {}
 
     def set_config_path(self, config_path) -> None:
         self.config_path = config_path
@@ -46,39 +48,77 @@ class Application:
                     application_objects.append(obj)
 
         # parse the services
-        services = self.config.services()
-        for service in services:
-            service_repository = self.repositories[service['repository']]
+        config_services = self.config.services()
 
-            if 'dockerfile' in service:
+        dockerfiles: List[ApplicationObject] = []
+        openapis: List[ApplicationObject] = []
+        for service_data in config_services:
+            # TODO validation
+            service_name = service_data['name']
+            service = Service(service_name)
+
+            service_repository = self.repositories[service_data['repository']]
+
+            if 'dockerfile' in service_data:
                 # get the image name if it exists
                 image_name = ''
-                if 'image' in service:
-                    image_name = service['image']
+                if 'image' in service_data:
+                    image_name = service_data['image']
 
                 # parse the dockerfile
                 dockerfile_parser = DockerfileParser(
-                    service_repository, service['dockerfile'], image_name=image_name)
+                    service_repository, service_data['dockerfile'], image_name=image_name)
                 dockerfile_objects = dockerfile_parser.parse()
+                if len(dockerfile_objects) > 0:
+                    service.dockerfile = dockerfile_objects[0]
                 for obj in dockerfile_objects:
-                    application_objects.append(obj)
+                    dockerfiles.append(obj)
 
-            if 'openapi' in service:
-                openapi_path = service['openapi']
+            if 'openapi' in service_data:
+                openapi_path = service_data['openapi']
                 openapi_parser = OpenAPIParser(
                     service_repository, openapi_path)
                 openapi_objects = openapi_parser.parse()
 
+                if len(openapi_objects) > 0:
+                    service.dockerfile = openapi_objects[0]
                 for obj in openapi_objects:
-                    application_objects.append(obj)
+                    openapis.append(obj)
+
+            self.services[service_name] = service
+
+        # deduplication of dockerfiles
+        seen_openapis = set()
+        for spec in dockerfiles:
+            if spec.path not in seen_openapis:
+                seen_openapis.add(spec.path)
+                application_objects.append(spec)
+
+        # deduplication of openapi specifications
+        seen_openapis = set()
+        for spec in openapis:
+            if spec.path not in seen_openapis:
+                seen_openapis.add(spec.path)
+                application_objects.append(spec)
+
+        # services parsing
+        for service, properties in self.config.properties():
+            print(service, properties)
+            self.services[service].properties = properties
 
         for obj in application_objects:
             logger.debug(obj)
 
         self.application_objects = application_objects
+        print(self.services)
 
         logger.info(
             f'finished parsing: {len(application_objects)} resulting objects')
+
+    def get_service(self, service_name: str) -> Optional[Service]:
+        if service_name in self.services:
+            return self.services[service_name]
+        return None
 
     def run_analyses(self):
         logger.info('running analyses on the application')

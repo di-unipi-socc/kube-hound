@@ -71,3 +71,12 @@ class ApplicationConfig():
         if 'deployment' not in self.config_object:
             raise KeyError('No deployment found in the config object')
         return self.config_object['deployment']
+
+    def properties(self):
+        """
+        Returns an application properties iterator
+        """
+        print(self.config_object)
+        if 'properties' not in self.config_object:
+            return {}
+        return self.config_object['properties'].items()
