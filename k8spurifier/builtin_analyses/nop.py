@@ -1,4 +1,4 @@
-from typing import List, Mapping
+from typing import Dict, List, Mapping
 from k8spurifier.analysis import Analysis, AnalysisResult
 from loguru import logger
 
@@ -20,6 +20,9 @@ class NopAnalysis(Analysis):
             for obj in input_objects[key]:
                 logger.debug(
                     f'NOP analysis received object of type {key}: {obj}')
+
+                if obj.service_properties is not None:
+                    logger.info(obj.service_properties)
 
         logger.info('finished NOP analyis')
 

@@ -9,7 +9,7 @@ class Service:
         self.name = name
         self.dockerfile: Optional[ApplicationObject] = None
         self.openapi: Optional[ApplicationObject] = None
-        self.properties: Dict = {}
+        self.properties: Optional[Dict] = None
 
     def __repr__(self) -> str:
         return f"Service({self.name}, {self.properties})"

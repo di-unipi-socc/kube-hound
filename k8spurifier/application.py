@@ -52,14 +52,23 @@ class Application:
         # parse the services
         config_services = self.config.services()
 
+        # parse all services names
+        for service_data in config_services:
+            service_name = service_data['name']
+            service = Service(service_name)
+            self.services[service_name] = service
+
+        # parse the service properties
+        for service, properties in self.config.properties():
+            self.services[service].properties = properties
+
+        # parse services' dockerfiles and openapis
         dockerfiles: List[ApplicationObject] = []
         openapis: List[ApplicationObject] = []
         for service_data in config_services:
             # TODO validation
-            service_name = service_data['name']
-            service = Service(service_name)
-
             service_repository = self.repositories[service_data['repository']]
+            service = self.services[service_data['name']]
 
             if 'dockerfile' in service_data:
                 # get the image name if it exists
@@ -71,10 +80,14 @@ class Application:
                 dockerfile_parser = DockerfileParser(
                     service_repository, service_data['dockerfile'], image_name=image_name)
                 dockerfile_objects = dockerfile_parser.parse()
+                for obj in dockerfile_objects:
+                    if service.properties is not None:
+                        obj.service_properties = dict(service.properties)
+
+                    dockerfiles.append(obj)
+
                 if len(dockerfile_objects) > 0:
                     service.dockerfile = dockerfile_objects[0]
-                for obj in dockerfile_objects:
-                    dockerfiles.append(obj)
 
             if 'openapi' in service_data:
                 openapi_path = service_data['openapi']
@@ -82,12 +95,14 @@ class Application:
                     service_repository, openapi_path)
                 openapi_objects = openapi_parser.parse()
 
-                if len(openapi_objects) > 0:
-                    service.dockerfile = openapi_objects[0]
                 for obj in openapi_objects:
+                    if service.properties is not None:
+                        obj.service_properties = dict(service.properties)
+
                     openapis.append(obj)
 
-            self.services[service_name] = service
+                if len(openapi_objects) > 0:
+                    service.dockerfile = openapi_objects[0]
 
         # deduplication of dockerfiles
         seen_openapis = set()
@@ -103,16 +118,10 @@ class Application:
                 seen_openapis.add(spec.path)
                 application_objects.append(spec)
 
-        # services parsing
-        for service, properties in self.config.properties():
-            print(service, properties)
-            self.services[service].properties = properties
-
         for obj in application_objects:
             logger.debug(obj)
 
         self.application_objects = application_objects
-        print(self.services)
 
         logger.info(
             f'finished parsing: {len(application_objects)} resulting objects')
