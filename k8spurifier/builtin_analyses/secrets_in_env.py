@@ -6,6 +6,8 @@ from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.smells import Smell
 from kubernetes import client, config
 from kubernetes.stream import stream
+from detect_secrets import SecretsCollection
+from detect_secrets.settings import default_settings
 
 
 class SecretsInEnvironmentAnalysis(DynamicAnalysis):
@@ -17,21 +19,39 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
     def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
             -> List[AnalysisResult]:
 
+        output_results = []
+
         v1 = client.CoreV1Api()
-        #print("Listing pods with their IPs:")
         ret = v1.list_pod_for_all_namespaces(watch=False)
         for i in ret.items:
+            pod_name = i.metadata.name
             for status in i.status.container_statuses:
                 container_name = status.name
+                logger.debug(
+                    f'checking pod {pod_name}, container {container_name}')
                 # print(container_name)
                 command = ['env']
                 response = stream(v1.connect_get_namespaced_pod_exec,
-                                  i.metadata.name,
+                                  pod_name,
                                   container=container_name,
                                   namespace=i.metadata.namespace,
                                   command=command,
                                   stderr=True, stdin=False,
                                   stdout=True, tty=False)
-                print(response)
+                # print(response)
 
-        return []
+                with open('/tmp/.env', 'w') as f:
+                    f.write(response)
+
+                secrets = SecretsCollection()
+                with default_settings():
+                    secrets.scan_file('/tmp/.env')
+
+                result = secrets.json()
+                if '/tmp/.env' in result:
+                    result = result['/tmp/.env']
+                    for entry in result:
+                        output_results.append(AnalysisResult(f"Detected secret in pod {pod_name} " +
+                                                             f", container {container_name}\n{entry}", {Smell.HS}))
+
+        return output_results
