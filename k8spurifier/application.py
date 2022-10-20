@@ -141,7 +141,7 @@ class Application:
         logger.info('Trying to load the kubernetes cluster config')
         try:
             config.load_kube_config()
-        except:
+        except Exception:
             logger.warning(
                 'failed to load kubernetes config, ignoring dynamic analyses')
             self.run_dynamic = False

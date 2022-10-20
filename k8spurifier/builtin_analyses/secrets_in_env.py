@@ -1,10 +1,10 @@
 from typing import Dict, List, Mapping
-from k8spurifier.analysis import Analysis, AnalysisResult, DynamicAnalysis, StaticAnalysis
+from k8spurifier.analysis import AnalysisResult, DynamicAnalysis
 from loguru import logger
 
 from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.smells import Smell
-from kubernetes import client, config
+from kubernetes import client
 from kubernetes.stream import stream
 from detect_secrets import SecretsCollection
 from detect_secrets.settings import default_settings
@@ -12,9 +12,9 @@ from detect_secrets.settings import default_settings
 
 class SecretsInEnvironmentAnalysis(DynamicAnalysis):
     analysis_id = 'D0'
-    analysis_name = 'Secrets in environment analysis'
+    analysis_name = 'Secrets in environment variables analysis'
     analysis_description = 'detect hardcoded secrets in containers environment'
-    input_types = []
+    input_types: List[str] = []
 
     def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
             -> List[AnalysisResult]:
@@ -49,14 +49,16 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
 
                 result = secrets.json()
                 if '/tmp/.env' in result:
-                    result = result['/tmp/.env']
-                    for entry in result:
-                        del entry['filename']
-                        variable_name = response.split(
-                            '\n')[entry['line_number'] - 1]
+                    secrets_found: List[Dict] = result['/tmp/.env']
+
+                    for entry in secrets_found:
+                        variable_name: str = response.split(
+                            '\n')[int(entry['line_number']) - 1]
+
                         description = f"Detected secret in pod {pod_name} " +\
                             f", container {container_name}\n" +\
                             f"variable: {variable_name}\nreason: {entry['type']}"
+
                         output_results.append(
                             AnalysisResult(description, {Smell.HS}))
 

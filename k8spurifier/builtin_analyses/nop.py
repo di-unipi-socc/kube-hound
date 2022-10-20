@@ -1,12 +1,12 @@
-from typing import Dict, List, Mapping
-from k8spurifier.analysis import Analysis, AnalysisResult
+from typing import List, Mapping
+from k8spurifier.analysis import AnalysisResult, StaticAnalysis
 from loguru import logger
 
 from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.smells import Smell
 
 
-class NopAnalysis(Analysis):
+class NopAnalysis(StaticAnalysis):
     analysis_id = 'S0'
     analysis_name = 'NOP analysis'
     analysis_description = 'do nothing'
@@ -22,7 +22,7 @@ class NopAnalysis(Analysis):
                     f'NOP analysis received object of type {key}: {obj}')
 
                 if obj.service_properties is not None:
-                    logger.info(obj.service_properties)
+                    logger.debug(obj.service_properties)
 
         logger.info('finished NOP analyis')
 
