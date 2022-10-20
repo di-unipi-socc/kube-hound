@@ -155,5 +155,7 @@ class Application:
     def show_results(self):
         print('Analysis results:')
         for result in self.analysis_results:
+            description_formatted = '\t' + \
+                '\n\t'.join(result.description.split('\n'))
             print(f"{result.generating_analysis} - detected smells {result.smells_detected}\n"
-                  f"\t{result.description}")
+                  f"{description_formatted}")
