@@ -9,6 +9,7 @@ from k8spurifier.frontend.parsers.kubernetes import KubernetesConfigParser
 from loguru import logger
 from k8spurifier.frontend.parsers.openapi import OpenAPIParser
 from k8spurifier.service import Service
+from kubernetes import config
 
 
 class Application:
@@ -17,6 +18,10 @@ class Application:
         self.application_objects: List[ApplicationObject] = []
         self.services: Dict[str, Service] = {}
         self.analysis_results: List[AnalysisResult] = []
+
+        # flags to run analyses types
+        self.run_static = True
+        self.run_dynamic = True
 
     def set_config_path(self, config_path) -> None:
         self.config_path = config_path
@@ -130,6 +135,17 @@ class Application:
         if service_name in self.services:
             return self.services[service_name]
         return None
+
+    def load_kubernetes_cluster_config(self):
+        # TODO add configuration path setting
+        logger.info('Trying to load the kubernetes cluster config')
+        try:
+            config.load_kube_config()
+        except:
+            logger.warning(
+                'failed to load kubernetes config, ignoring dynamic analyses')
+            self.run_dynamic = False
+        logger.info('Successfully loaded kubernetes cluster config')
 
     def run_analyses(self):
         logger.info('running analyses on the application')
