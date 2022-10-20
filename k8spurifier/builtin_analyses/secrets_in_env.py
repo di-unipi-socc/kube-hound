@@ -51,7 +51,13 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
                 if '/tmp/.env' in result:
                     result = result['/tmp/.env']
                     for entry in result:
-                        output_results.append(AnalysisResult(f"Detected secret in pod {pod_name} " +
-                                                             f", container {container_name}\n{entry}", {Smell.HS}))
+                        del entry['filename']
+                        variable_name = response.split(
+                            '\n')[entry['line_number'] - 1]
+                        description = f"Detected secret in pod {pod_name} " +\
+                            f", container {container_name}\n" +\
+                            f"variable: {variable_name}\nreason: {entry['type']}"
+                        output_results.append(
+                            AnalysisResult(description, {Smell.HS}))
 
         return output_results
