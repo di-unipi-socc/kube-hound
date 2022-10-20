@@ -13,6 +13,10 @@ def main():
 
     parser.add_argument('-c', '--context', dest='context', default='.',
                         help='path to the application context')
+    parser.add_argument('-d', action='store_true',
+                        help='run only dynamic analyses')
+    parser.add_argument('-s', action='store_true',
+                        help='run only static analyses')
     parser.add_argument('-v', action='store_true',
                         help='verbose output')
     parser.add_argument('-vv', action='store_true',
@@ -35,7 +39,18 @@ def main():
     app.set_config_path(Path(args.config_file))
     app.aquire_application()
     app.parse_application()
-    app.load_kubernetes_cluster_config()
+
+    # parse analysis types
+    if args.s:
+        app.run_dynamic = False
+        app.run_static = True
+    elif args.d:
+        app.run_dynamic = True
+        app.run_static = False
+
+    if app.run_dynamic:
+        app.load_kubernetes_cluster_config()
+
     app.run_analyses()
     app.show_results()
 

@@ -1,5 +1,5 @@
 from typing import Dict, List, Mapping, Type
-from k8spurifier.analysis import Analysis, AnalysisResult
+from k8spurifier.analysis import Analysis, AnalysisResult, DynamicAnalysis, StaticAnalysis
 from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.builtin_analyses import all_analyses
 from loguru import logger
@@ -26,10 +26,16 @@ class AnalysisScheduler():
 
         return resulting_mapping
 
-    def run_analyses(self) -> List[AnalysisResult]:
+    def run_analyses(self, run_static: bool, run_dynamic: bool) -> List[AnalysisResult]:
         total_analysis_results = []
         for analysis_class in self.analyses:
-            analysis = analysis_class()
+            if not run_static and issubclass(analysis_class, StaticAnalysis):
+                continue
+
+            if not run_dynamic and issubclass(analysis_class, DynamicAnalysis):
+                continue
+
+            analysis_obj = analysis_class()
 
             input_objects = {}
             for inp_type in analysis_class.input_types:  # type: ignore
@@ -41,11 +47,11 @@ class AnalysisScheduler():
                     logger.warning(f'analysis "{analysis_class.analysis_name}" required objects '
                                    'of type {type} but no one exists in the application')
             logger.info(f'Running "{analysis_class.analysis_name}"')
-            analysis_results = analysis.run_analysis(input_objects)
+            analysis_results = analysis_obj.run_analysis(input_objects)
 
             # inject generating analysis name
             # and append to the aggregate list
-            analysis_name = analysis.analysis_name
+            analysis_name = analysis_obj.analysis_name
             for result in analysis_results:
                 result.generating_analysis = analysis_name
                 total_analysis_results.append(result)

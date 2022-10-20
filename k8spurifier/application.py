@@ -150,7 +150,8 @@ class Application:
     def run_analyses(self):
         logger.info('running analyses on the application')
         scheduler = AnalysisScheduler(self.application_objects)
-        self.analysis_results = scheduler.run_analyses()
+        self.analysis_results = scheduler.run_analyses(
+            self.run_static, self.run_dynamic)
 
     def show_results(self):
         print('Analysis results:')
