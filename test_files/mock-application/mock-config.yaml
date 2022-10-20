@@ -52,3 +52,10 @@ services:
     repository: main
     dockerfile: src/echo/Dockerfile
     openapi: src/echo/echo.yaml
+
+# claimed properties
+properties:
+  gateway:
+    external: true
+  authserver:
+    performsAuthentication: true

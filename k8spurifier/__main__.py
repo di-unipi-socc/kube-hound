@@ -35,6 +35,7 @@ def main():
     app.set_config_path(Path(args.config_file))
     app.aquire_application()
     app.parse_application()
+    app.load_kubernetes_cluster_config()
     app.run_analyses()
     app.show_results()
 

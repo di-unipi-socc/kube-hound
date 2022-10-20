@@ -9,6 +9,7 @@ from k8spurifier.frontend.parsers.kubernetes import KubernetesConfigParser
 from loguru import logger
 from k8spurifier.frontend.parsers.openapi import OpenAPIParser
 from k8spurifier.service import Service
+from kubernetes import config
 
 
 class Application:
@@ -17,6 +18,10 @@ class Application:
         self.application_objects: List[ApplicationObject] = []
         self.services: Dict[str, Service] = {}
         self.analysis_results: List[AnalysisResult] = []
+
+        # flags to run analyses types
+        self.run_static = True
+        self.run_dynamic = True
 
     def set_config_path(self, config_path) -> None:
         self.config_path = config_path
@@ -52,14 +57,23 @@ class Application:
         # parse the services
         config_services = self.config.services()
 
+        # parse all services names
+        for service_data in config_services:
+            service_name = service_data['name']
+            service = Service(service_name)
+            self.services[service_name] = service
+
+        # parse the service properties
+        for service, properties in self.config.properties():
+            self.services[service].properties = properties
+
+        # parse services' dockerfiles and openapis
         dockerfiles: List[ApplicationObject] = []
         openapis: List[ApplicationObject] = []
         for service_data in config_services:
             # TODO validation
-            service_name = service_data['name']
-            service = Service(service_name)
-
             service_repository = self.repositories[service_data['repository']]
+            service = self.services[service_data['name']]
 
             if 'dockerfile' in service_data:
                 # get the image name if it exists
@@ -71,10 +85,14 @@ class Application:
                 dockerfile_parser = DockerfileParser(
                     service_repository, service_data['dockerfile'], image_name=image_name)
                 dockerfile_objects = dockerfile_parser.parse()
+                for obj in dockerfile_objects:
+                    if service.properties is not None:
+                        obj.service_properties = dict(service.properties)
+
+                    dockerfiles.append(obj)
+
                 if len(dockerfile_objects) > 0:
                     service.dockerfile = dockerfile_objects[0]
-                for obj in dockerfile_objects:
-                    dockerfiles.append(obj)
 
             if 'openapi' in service_data:
                 openapi_path = service_data['openapi']
@@ -82,12 +100,14 @@ class Application:
                     service_repository, openapi_path)
                 openapi_objects = openapi_parser.parse()
 
-                if len(openapi_objects) > 0:
-                    service.dockerfile = openapi_objects[0]
                 for obj in openapi_objects:
+                    if service.properties is not None:
+                        obj.service_properties = dict(service.properties)
+
                     openapis.append(obj)
 
-            self.services[service_name] = service
+                if len(openapi_objects) > 0:
+                    service.dockerfile = openapi_objects[0]
 
         # deduplication of dockerfiles
         seen_openapis = set()
@@ -103,16 +123,10 @@ class Application:
                 seen_openapis.add(spec.path)
                 application_objects.append(spec)
 
-        # services parsing
-        for service, properties in self.config.properties():
-            print(service, properties)
-            self.services[service].properties = properties
-
         for obj in application_objects:
             logger.debug(obj)
 
         self.application_objects = application_objects
-        print(self.services)
 
         logger.info(
             f'finished parsing: {len(application_objects)} resulting objects')
@@ -122,6 +136,17 @@ class Application:
             return self.services[service_name]
         return None
 
+    def load_kubernetes_cluster_config(self):
+        # TODO add configuration path setting
+        logger.info('Trying to load the kubernetes cluster config')
+        try:
+            config.load_kube_config()
+        except Exception:
+            logger.warning(
+                'failed to load kubernetes config, ignoring dynamic analyses')
+            self.run_dynamic = False
+        logger.info('Successfully loaded kubernetes cluster config')
+
     def run_analyses(self):
         logger.info('running analyses on the application')
         scheduler = AnalysisScheduler(self.application_objects)
@@ -130,5 +155,7 @@ class Application:
     def show_results(self):
         print('Analysis results:')
         for result in self.analysis_results:
+            description_formatted = '\t' + \
+                '\n\t'.join(result.description.split('\n'))
             print(f"{result.generating_analysis} - detected smells {result.smells_detected}\n"
-                  f"\t{result.description}")
+                  f"{description_formatted}")

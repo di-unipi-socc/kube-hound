@@ -1,4 +1,6 @@
+from typing import Dict
 from pathlib import Path
+from typing import Optional
 
 
 class ApplicationObject():
@@ -12,6 +14,7 @@ class ApplicationObject():
         self.type = type
         self.path = path
         self.data = data
+        self.service_properties: Optional[Dict] = None
         # TODO better UUID?
         self.uuid = f'[{type}]-[{path}]'
 
@@ -27,4 +30,5 @@ class ApplicationObject():
 
     def __repr__(self) -> str:
         return f"ApplicationObject({self.type}, {self.path.name}" + \
+            (f", {self.service_properties}" if self.service_properties != '' else "") + ")" + \
             (f", {self.data}" if self.data != {} else "") + ")"
