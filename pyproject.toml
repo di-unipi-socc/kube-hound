@@ -12,6 +12,7 @@ GitPython = "^3.1.27"
 loguru = "^0.6.0"
 kubernetes = "^24.2.0"
 detect-secrets = "^1.4.0"
+docker = "^6.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
