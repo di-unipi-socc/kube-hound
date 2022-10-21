@@ -4,6 +4,7 @@ from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.frontend.parsers.abstractparser import ApplicationParser
 from k8spurifier.frontend.repositories import Repository
 from loguru import logger
+import yaml
 
 
 class OpenAPIParser(ApplicationParser):
@@ -26,4 +27,10 @@ class OpenAPIParser(ApplicationParser):
                 f'The openAPI specification {openapi_path} does not exists, skipping')
             return []
 
-        return [ApplicationObject('openapi', openapi_path)]
+        # TODO add support for json openapi specifications
+        f = open(openapi_path)
+        document = yaml.safe_load(f)
+
+        return [ApplicationObject('openapi', openapi_path, data={
+            'cache': document
+        })]
