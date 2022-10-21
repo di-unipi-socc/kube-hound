@@ -55,7 +55,7 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
                         variable_name: str = response.split(
                             '\n')[int(entry['line_number']) - 1]
 
-                        description = f"Detected secret in pod {pod_name} " +\
+                        description = f"Detected secret in pod {pod_name}" +\
                             f", container {container_name}\n" +\
                             f"variable: {variable_name}\nreason: {entry['type']}"
 
