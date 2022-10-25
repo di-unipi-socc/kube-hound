@@ -40,20 +40,6 @@ class Application:
 
         deployment = self.config.deployment()
 
-        # parse kubernetes config files
-        if 'kubernetes' in deployment:
-            kubernetes_config = deployment['kubernetes']
-            repository = self.repositories[kubernetes_config['repository']]
-            files = repository.get_artifacts_by_regex(
-                kubernetes_config['glob'])
-            for f in files:
-                kubernetes_parser = KubernetesConfigParser(repository, f)
-                kubernetes_objects = kubernetes_parser.parse()
-
-                # append all the objects in the application objects list
-                for obj in kubernetes_objects:
-                    application_objects.append(obj)
-
         # parse the services
         config_services = self.config.services()
 
@@ -66,6 +52,21 @@ class Application:
         # parse the service properties
         for service, properties in self.config.properties():
             self.services[service].properties = properties
+
+        # parse kubernetes config files
+        if 'kubernetes' in deployment:
+            kubernetes_config = deployment['kubernetes']
+            repository = self.repositories[kubernetes_config['repository']]
+            files = repository.get_artifacts_by_regex(
+                kubernetes_config['glob'])
+            for f in files:
+                kubernetes_parser = KubernetesConfigParser(
+                    repository, f, self.services)
+                kubernetes_objects = kubernetes_parser.parse()
+
+                # append all the objects in the application objects list
+                for obj in kubernetes_objects:
+                    application_objects.append(obj)
 
         # parse services' dockerfiles and openapis
         dockerfiles: List[ApplicationObject] = []

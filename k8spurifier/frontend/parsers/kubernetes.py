@@ -19,10 +19,11 @@ class KubernetesConfigParser(ApplicationParser):
     - referenced_images: list of container images referenced by the kubernetes config
     """
 
-    def __init__(self, context: Repository, kubernetes_config_file: Path):
+    def __init__(self, context: Repository, kubernetes_config_file: Path, services: Dict):
         self.context = context
         self.context_path = context.get_local_path()
         self.config_file: Path = kubernetes_config_file
+        self.services = services
 
     def parse(self) -> List[ApplicationObject]:
         """Parse the kubernetes config file into (possibly multiple) application objects"""
@@ -40,13 +41,18 @@ class KubernetesConfigParser(ApplicationParser):
             # compute referenced images for the document
             referenced_images = self.__get_referenced_images(document)
 
+            properties = self.__get_service_properties(document)
+
             # generate the application object
-            out_objects.append(ApplicationObject(
+            config_object = ApplicationObject(
                 'kubernetes_config', self.config_file, data={
                     'document_number': i,
                     'referenced_images': referenced_images,
                     'cache': document
-                }))
+                })
+            config_object.service_properties = properties
+
+            out_objects.append(config_object)
         return out_objects
 
     def __get_referenced_images(self, document: Dict) -> List[str]:
@@ -78,3 +84,9 @@ class KubernetesConfigParser(ApplicationParser):
                 if 'image' in container:
                     referenced_images.append(container['image'])
         return referenced_images
+
+    def __get_service_properties(self, obj) -> Dict:
+        if obj.get('kind') == 'Service':
+            service_name = obj.get('metadata').get('name')
+            if service_name in self.services:
+                return self.services[service_name].properties
