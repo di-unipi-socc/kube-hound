@@ -17,8 +17,11 @@ class KubesecIntegrationAnalysis(StaticAnalysis):
     analysis_description = 'integration with KubeSec.io analysis tool'
     input_types = ['kubernetes_config']
 
-    def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) -> List[AnalysisResult]:
+    def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
+            -> List[AnalysisResult]:
         kubernetes_objects = input_objects.get('kubernetes_config')
+        if kubernetes_objects is None:
+            return []
 
         self.docker_client = docker.from_env()
 

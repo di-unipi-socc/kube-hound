@@ -1,4 +1,4 @@
-from typing import Dict, List, Mapping
+from typing import List, Mapping
 from k8spurifier.analysis import AnalysisResult, DynamicAnalysis
 from loguru import logger
 
@@ -45,12 +45,18 @@ class ExternalIpAnalysis(DynamicAnalysis):
             load_balancer_status = status.get(
                 'load_balancer').get('ingress')
             if load_balancer_status is not None:
-                if service_name in services_mapping and not services_mapping[service_name].get('external') == True:
-                    description = f"External service detected: {service_name}\n" +\
-                        f"exposed on external ip {load_balancer_status.get('ip')}" +\
-                        f"on host {load_balancer_status.get('host')}"
+                if service_name in services_mapping:
+                    logger.debug(f"checking service {service_name}")
+                    properties = services_mapping[service_name]
+                    if properties is None:
+                        continue
+                    external = properties.get('external')
+                    if external is False:
+                        description = f"External service detected: {service_name}\n" +\
+                            f"exposed on external ip {load_balancer_status.get('ip')}" +\
+                            f"on host {load_balancer_status.get('host')}"
 
                     output_results.append(
-                        AnalysisResult(description, {Smell.PEM}))
+                        AnalysisResult(description, {Smell.PAM}))
             # print(data[service])
         return output_results

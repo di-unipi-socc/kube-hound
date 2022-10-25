@@ -1,6 +1,6 @@
 from pathlib import Path
 import yaml
-from typing import Dict, List
+from typing import Dict, List, Optional
 from k8spurifier.frontend.parsers.abstractparser import ApplicationParser
 from k8spurifier.frontend.repositories import Repository
 from k8spurifier.applicationobject import ApplicationObject
@@ -85,8 +85,9 @@ class KubernetesConfigParser(ApplicationParser):
                     referenced_images.append(container['image'])
         return referenced_images
 
-    def __get_service_properties(self, obj) -> Dict:
+    def __get_service_properties(self, obj) -> Optional[Dict]:
         if obj.get('kind') == 'Service':
             service_name = obj.get('metadata').get('name')
             if service_name in self.services:
                 return self.services[service_name].properties
+        return None

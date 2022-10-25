@@ -59,10 +59,11 @@ class SecuritySchemesAnalysis(StaticAnalysis):
                         scheme_desc: Dict = security_schemes.get(scheme)
 
                         # TODO logging invalid openAPI specification
-                        if scheme_desc is not None:
+                        if scheme_desc is not None and service_prop is not None:
                             is_basic_auth = scheme_desc.get(
                                 'type') == 'http' and scheme_desc.get('scheme') == 'basic'
-                            if is_basic_auth and not (service_prop.get('external') == True or service_prop.get('performsAuthorization') == True):
+                            if is_basic_auth and not (service_prop.get('external') is True
+                                                      or service_prop.get('performsAuthorization') is True):
                                 description = f"Detected basic http authorization in {obj.path.name}, {method} {path}"
                                 out_results.append(AnalysisResult(
                                     description, {Smell.MUA, Smell.CA}))
