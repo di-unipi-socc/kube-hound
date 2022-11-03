@@ -1,4 +1,5 @@
-from typing import Dict, List, Mapping
+from symbol import global_stmt
+from typing import Dict, List, Mapping, Optional
 from k8spurifier.analysis import AnalysisResult, StaticAnalysis
 from loguru import logger
 
@@ -18,56 +19,97 @@ class SecuritySchemesAnalysis(StaticAnalysis):
         assert 'openapi' in input_objects
         openapi_objects = input_objects['openapi']
 
-        out_results = []
+        out_smells = []
         for obj in openapi_objects:
             document: Dict = obj.get_content()
             service_prop = obj.service_properties
 
-            # check if security schemes are specified
+            # if SecuritySchemes component is not specified, return IAC smell
             if 'components' not in document or 'securitySchemes' not in document['components']:
                 description = f"SecurityScheme not specified in {obj.path.name}"
-                out_results.append(AnalysisResult(description, {Smell.IAC}))
+                out_smells.append(AnalysisResult(description, {Smell.IAC}))
                 continue
 
-            security_schemes = document['components']['securitySchemes']
-            print(security_schemes)
+            global_security = document.get('security')
 
+            security_schemes = document['components']['securitySchemes']
+
+            # interate through all paths, and all API methods
             for path in document['paths']:
                 path_description = document['paths'][path]
                 for method in path_description:
                     endpoint_description = path_description[method]
 
-                    print(endpoint_description)
+                    # run the analyis in the endpoint
+                    result = self.__analyze_endpoint(
+                        method, path, endpoint_description, security_schemes,
+                        global_security, obj.path.name, service_prop)
 
-                    security = endpoint_description.get('security')
+                    if result is not None:
+                        out_smells.append(result)
 
-                    # if the endpoint has no security field, then
-                    if security is None:
-                        description = f"No security field specified in {obj.path.name}, {method} {path}"
-                        out_results.append(AnalysisResult(
-                            description, {Smell.IAC}))
-                        continue
+        return out_smells
 
-                    print(security)
+    def __analyze_endpoint(self, method, path, endpoint_description,
+                           security_schemes, global_security, object_name,
+                           service_prop) -> Optional[AnalysisResult]:
 
-                    schemes = []
-                    for x in security:
-                        for k in x:
-                            schemes.append(k)
+        # get the security field and default to the global one if not found
+        security = endpoint_description.get('security')
+        if security is None:
+            security = global_security
 
-                    for scheme in schemes:
-                        scheme_desc: Dict = security_schemes.get(scheme)
+        # if the endpoint has no security field, then output the IAC smell
+        if security is None:
+            description = f"No security field specified in {object_name}, {method} {path}"
+            return AnalysisResult(description, {Smell.IAC})
 
-                        # TODO logging invalid openAPI specification
-                        if scheme_desc is not None and service_prop is not None:
-                            is_basic_auth = scheme_desc.get(
-                                'type') == 'http' and scheme_desc.get('scheme') == 'basic'
-                            if is_basic_auth and not (service_prop.get('external') is True
-                                                      or service_prop.get('performsAuthorization') is True):
-                                description = f"Detected basic http authorization in {obj.path.name}, {method} {path}"
-                                out_results.append(AnalysisResult(
-                                    description, {Smell.MUA, Smell.CA}))
+        # if security field is empty, output the IAC smell
+        if security == []:
+            description = f"Empty field specified in {object_name}, {method} {path}"
+            return AnalysisResult(description, {Smell.IAC})
 
-                    # basic auth: OK exposed or performsAuthentication
+        # iterate through all security schemes declared for this endpoint
+        schemes = self.__get_schemes(security)
+        for scheme in schemes:
+            scheme_info: Dict = security_schemes.get(scheme)
 
-        return out_results
+            # if the is not described in the SecuritySchemes component, we throw a warning to the user
+            if scheme_info is None:
+                logger.warning(f'OpenAPI specification {object_name} is invalid, '
+                               '{scheme} is not present in SecuritySchemes')
+                continue
+
+            # If the endpoint is enacting Basic authorization scheme, and it shouldn't,
+            # output the CA and MUA smells
+            if self.__is_basic_auth(scheme_info) \
+                    and not self.__shervice_can_use_basic_auth(service_prop):
+                description = f"Detected basic http authorization in {object_name}, {method} {path}"
+                return AnalysisResult(description, {Smell.MUA, Smell.CA})
+
+        # no smells detected
+        return None
+
+    def __get_schemes(self, security):
+        """
+        Get all schemes from the security field
+        """
+        schemes = []
+        for x in security:
+            for k in x:
+                schemes.append(k)
+        return schemes
+
+    def __is_basic_auth(self, scheme):
+        return scheme.get('type') == 'http' and \
+            scheme.get('scheme') == 'basic'
+
+    def __shervice_can_use_basic_auth(self, properties):
+        """
+        Returns True is the service can use Basic HTTP authorization, based on the service properties
+        """
+        if properties is None:
+            return False
+
+        return properties.get('external') is True or \
+            properties.get('performsAuthorization') is True
