@@ -6,12 +6,13 @@ from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.smells import Smell
 from kubernetes import client
 from kubernetes.stream import stream
+
 from detect_secrets import SecretsCollection
 from detect_secrets.settings import default_settings
 
 
 class SecretsInEnvironmentAnalysis(DynamicAnalysis):
-    analysis_id = 'D0'
+    analysis_id = 'secrets_in_env'
     analysis_name = 'Secrets in environment variables analysis'
     analysis_description = 'detect hardcoded secrets in containers environment'
     input_types: List[str] = []
@@ -29,21 +30,37 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
                 container_name = status.name
                 logger.debug(
                     f'checking pod {pod_name}, container {container_name}')
-                # print(container_name)
-                command = ['env']
-                response = stream(v1.connect_get_namespaced_pod_exec,
-                                  pod_name,
-                                  container=container_name,
-                                  namespace=i.metadata.namespace,
-                                  command=command,
-                                  stderr=True, stdin=False,
-                                  stdout=True, tty=False)
-                # print(response)
+                try:
+                    # print(container_name)
+                    command = ['env']
+                    response = stream(v1.connect_get_namespaced_pod_exec,
+                                      pod_name,
+                                      container=container_name,
+                                      namespace=i.metadata.namespace,
+                                      command=command,
+                                      stderr=True, stdin=False,
+                                      stdout=True, tty=False)
+                except:
+                    logger.warning(
+                        f'checking for environment variables of pod {pod_name}, container {container_name} failed')
+                    continue
+
+                # surround the variable values with double quotes
+                # this gives better results in secrets detection
+                quoted_env_content = ''
+                for line in response.split('\n'):
+                    toks = line.split('=', 1)
+                    if len(toks) != 2:
+                        quoted_env_content += line + '\n'
+                        continue
+
+                    quoted_env_content += f'{toks[0]}="{toks[1]}"\n'
 
                 with open('/tmp/.env', 'w') as f:
-                    f.write(response)
+                    f.write(quoted_env_content)
 
                 secrets = SecretsCollection()
+
                 with default_settings():
                     secrets.scan_file('/tmp/.env')
 
