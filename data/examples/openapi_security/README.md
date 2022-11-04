@@ -1,11 +1,11 @@
 # Test OpenAPI security schemes analysis
 
-echo_no_schemes.yaml contains an OpenAPI specification with missing SecuritySchemes component
-echo_no_security.yaml contains an OpenAPI specification where the POST /echo endpoint is missing
+- `echo_no_schemes.yaml` contains an OpenAPI specification with missing SecuritySchemes component
+- `echo_no_security.yaml` contains an OpenAPI specification where the POST /echo endpoint is missing
     the security field
-echo_security_override contains an OpenAPI specification where the POST /echo endpoint is
+- `echo_security_override.yaml` contains an OpenAPI specification where the POST /echo endpoint is
     overriding the global security policy with an empty policy
-echo_basic_auth contains an OpenAPI specification where the POST /echo endpoint is
+- `echo_basic_auth.yaml` contains an OpenAPI specification where the POST /echo endpoint is
     secured through Basic HTTP authorization, but the service is not declared external nor it
     preforms authorization
 
