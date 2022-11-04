@@ -1,0 +1,10 @@
+repositories:
+  main:
+    src: .
+
+deployment:
+  kubernetes:
+    repository: main
+    glob: "echo1_*.yaml"
+
+services: []

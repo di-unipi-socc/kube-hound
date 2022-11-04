@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo1
+  labels:
+    app: echo1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: echo1
+  template:
+    metadata:
+      labels:
+        name: echo1
+    spec:
+      containers:
+        - name: echo1
+          image: gio54321/echo
+          env:
+            - name: ECHO_NAME
+              value: echo1
+            - name: AUTH_ENDPOINT
+              value: http://authserver
+          resources:
+            limits:
+              cpu: 300m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          ports:
+            - containerPort: 8080
