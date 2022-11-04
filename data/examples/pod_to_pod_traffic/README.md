@@ -1,4 +1,4 @@
-# Test Secrets in environment variables analysis
+# Test Pod-to-Pod traffic analysis
 
 This test works on an Istio-enabled cluster.
 
