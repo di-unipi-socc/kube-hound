@@ -1,8 +1,6 @@
 # Test Secrets in environment variables analysis
 
-For this test we deploy the Pod specified in secrets-holder.yaml, which is a Pod containing secrets
-in the environment variables.
-When we run the tool we will see the secrets detected
+- `secrets-holder.yaml`contains a Pod specification that holds secrets in its environment
 
 ## Set up
 ```

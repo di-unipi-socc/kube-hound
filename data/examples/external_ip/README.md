@@ -1,6 +1,6 @@
 # Test External-IP analysis
 
-echo1_load_balancer.yaml contains a Kubernetes service of kind LoadBalancer, so externally exposed
+- `echo1_load_balancer.yaml` contains a Kubernetes service of kind LoadBalancer, so externally exposed
 
 ## Set up
 
