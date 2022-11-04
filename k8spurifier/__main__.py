@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 import sys
 
-from k8spurifier.application import Application
+from k8spurifier.hound import Hound
 from loguru import logger
 
 
@@ -17,6 +17,8 @@ def main():
                         help='run only dynamic analyses')
     parser.add_argument('-s', action='store_true',
                         help='run only static analyses')
+    parser.add_argument('-l', dest='analysis_list', default='',
+                        help='comma separated list of analysis to run (default all available)')
     parser.add_argument('-v', action='store_true',
                         help='verbose output')
     parser.add_argument('-vv', action='store_true',
@@ -35,24 +37,29 @@ def main():
     logger.remove()
     logger.add(sys.stderr, level=level)
 
-    app = Application(Path(args.context))
-    app.set_config_path(Path(args.config_file))
-    app.aquire_application()
-    app.parse_application()
+    hound = Hound(Path(args.context))
+    hound.set_config_path(Path(args.config_file))
+    hound.aquire_application()
+    hound.parse_application()
 
     # parse analysis types
     if args.s:
-        app.run_dynamic = False
-        app.run_static = True
+        hound.run_dynamic = False
+        hound.run_static = True
     elif args.d:
-        app.run_dynamic = True
-        app.run_static = False
+        hound.run_dynamic = True
+        hound.run_static = False
 
-    if app.run_dynamic:
-        app.load_kubernetes_cluster_config()
+    if hound.run_dynamic:
+        hound.load_kubernetes_cluster_config()
 
-    app.run_analyses()
-    app.show_results()
+    if args.analysis_list != '':
+        analyses_to_run = args.analysis_list.split(',')
+        hound.run_analyses(analyses_to_run)
+    else:
+        hound.run_analyses()
+
+    hound.show_results()
 
 
 if __name__ == '__main__':

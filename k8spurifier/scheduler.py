@@ -1,4 +1,4 @@
-from typing import Dict, List, Mapping, Type
+from typing import Dict, List, Mapping, Optional, Type
 from k8spurifier.analysis import Analysis, AnalysisResult, DynamicAnalysis, StaticAnalysis
 from k8spurifier.applicationobject import ApplicationObject
 from k8spurifier.builtin_analyses import all_analyses
@@ -10,6 +10,7 @@ class AnalysisScheduler():
         self.application_objects = application_objects
         self.object_type_mapping = self.__compute_type_mapping(
             application_objects)
+        self.analysis_list: Optional[List[str]] = None
 
         # TODO naming is a bit confusing
         self.analyses: List[Type[Analysis]] = all_analyses
@@ -35,17 +36,27 @@ class AnalysisScheduler():
             if not run_dynamic and issubclass(analysis_class, DynamicAnalysis):
                 continue
 
+            if self.analysis_list is not None and \
+                    analysis_class.analysis_id not in self.analysis_list:
+                continue
+
             analysis_obj = analysis_class()
 
             input_objects = {}
+            object_count = 0
             for inp_type in analysis_class.input_types:  # type: ignore
-
                 if inp_type in self.object_type_mapping:
                     input_objects[inp_type] = self.object_type_mapping[inp_type]
+                    object_count += len(self.object_type_mapping[inp_type])
                 else:
                     input_objects[inp_type] = []
                     logger.warning(f'analysis "{analysis_class.analysis_name}" required objects '
-                                   'of type {type} but no one exists in the application')
+                                   f'of type {inp_type} but no one exists in the application')
+
+            if len(analysis_class.input_types) > 0 and object_count == 0:
+                logger.info(f'Skipping analysis"{analysis_class.analysis_name} because there are'
+                            ' no input objects')
+                continue
             logger.info(f'Running "{analysis_class.analysis_name}"')
             analysis_results = analysis_obj.run_analysis(input_objects)
 
