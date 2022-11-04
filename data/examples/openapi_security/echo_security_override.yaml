@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  title: Users service API
+  description: API specification of the users service that provide authentication and authorization
+  version: 0.1.0
+
+servers:
+  - url: http://echo/
+
+security:
+  - internalAPIKey: []
+
+paths:
+  /echo:
+    post:
+      summary: Echo endpoint
+      description: simply returns back the input
+      security: []
+      responses:
+        "200":
+          description: Return the echoed input
+          content:
+            text/plain:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+components:
+  responses:
+    UnauthorizedError:
+      description: User not authorized
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  securitySchemes:
+    internalAPIKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

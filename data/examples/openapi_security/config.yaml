@@ -1,0 +1,22 @@
+repositories:
+  main:
+    src: .
+
+deployment: {}
+
+services:
+  - name: echo-no-schemes
+    repository: main
+    openapi: echo_no_schemes.yaml
+
+  - name: echo-no-security
+    repository: main
+    openapi: echo_no_security.yaml
+
+  - name: echo-security-override
+    repository: main
+    openapi: echo_security_override.yaml
+
+  - name: echo-basic-auth
+    repository: main
+    openapi: echo_basic_auth.yaml
