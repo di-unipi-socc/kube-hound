@@ -1,20 +1,18 @@
 import os
 import signal
 import subprocess
-import multiprocessing
 from time import sleep
 from typing import List, Mapping
-from k8spurifier.analysis import AnalysisResult, DynamicAnalysis, StaticAnalysis
+from k8spurifier.analysis import AnalysisResult, DynamicAnalysis
 from loguru import logger
 from kubernetes import client
 import pyshark
 
 from k8spurifier.applicationobject import ApplicationObject
+from k8spurifier.smells import Smell
 
 # woarkaround to make pyshark work
 import nest_asyncio
-
-from k8spurifier.smells import Smell
 nest_asyncio.apply()
 
 MAX_RESULTS_SHOWN = 10
@@ -22,10 +20,10 @@ TRAFFIC_MONITORING_TIME = 30  # seconds
 
 
 class TrafficAnalysis(DynamicAnalysis):
-    analysis_id = 'D1'
+    analysis_id = 'pod_to_pod_traffic'
     analysis_name = 'Traffic analysis'
     analysis_description = 'inspect traffic to detect plaintext requests between services'
-    input_types = []
+    input_types: List[str] = []
 
     def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
             -> List[AnalysisResult]:

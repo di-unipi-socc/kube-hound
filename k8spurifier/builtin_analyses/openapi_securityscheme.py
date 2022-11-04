@@ -1,4 +1,3 @@
-from symbol import global_stmt
 from typing import Dict, List, Mapping, Optional
 from k8spurifier.analysis import AnalysisResult, StaticAnalysis
 from loguru import logger
@@ -9,12 +8,13 @@ from k8spurifier.smells import Smell
 
 
 class SecuritySchemesAnalysis(StaticAnalysis):
-    analysis_id = 'S0'
+    analysis_id = 'openapi_securityscheme'
     analysis_name = 'SecurityScheme analysis'
     analysis_description = 'find unsecured endpoints in microservices API specifications'
     input_types = ['openapi']
 
-    def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) -> List[AnalysisResult]:
+    def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
+            -> List[AnalysisResult]:
 
         assert 'openapi' in input_objects
         openapi_objects = input_objects['openapi']
@@ -74,7 +74,8 @@ class SecuritySchemesAnalysis(StaticAnalysis):
         for scheme in schemes:
             scheme_info: Dict = security_schemes.get(scheme)
 
-            # if the is not described in the SecuritySchemes component, we throw a warning to the user
+            # if the is not described in the SecuritySchemes component,
+            # we throw a warning to the user
             if scheme_info is None:
                 logger.warning(f'OpenAPI specification {object_name} is invalid, '
                                '{scheme} is not present in SecuritySchemes')
@@ -106,7 +107,8 @@ class SecuritySchemesAnalysis(StaticAnalysis):
 
     def __shervice_can_use_basic_auth(self, properties):
         """
-        Returns True is the service can use Basic HTTP authorization, based on the service properties
+        Returns True is the service can use Basic HTTP authorization,
+        based on the service properties
         """
         if properties is None:
             return False

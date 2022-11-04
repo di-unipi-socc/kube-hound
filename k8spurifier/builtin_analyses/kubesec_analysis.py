@@ -12,7 +12,7 @@ from k8spurifier.smells import Smell
 
 
 class KubesecIntegrationAnalysis(StaticAnalysis):
-    analysis_id = 'S0'
+    analysis_id = 'kubesec_io'
     analysis_name = 'KubeSec analysis'
     analysis_description = 'integration with KubeSec.io analysis tool'
     input_types = ['kubernetes_config']
