@@ -12,7 +12,7 @@ from k8spurifier.service import Service
 from kubernetes import config
 
 
-class Application:
+class Hound:
     def __init__(self, context_path: Path) -> None:
         self.context_path = context_path
         self.application_objects: List[ApplicationObject] = []
@@ -148,9 +148,13 @@ class Application:
             self.run_dynamic = False
         logger.info('Successfully loaded kubernetes cluster config')
 
-    def run_analyses(self):
+    def run_analyses(self, analysis_list=None):
         logger.info('running analyses on the application')
         scheduler = AnalysisScheduler(self.application_objects)
+
+        if analysis_list != None:
+            scheduler.analysis_list = analysis_list
+
         self.analysis_results = scheduler.run_analyses(
             self.run_static, self.run_dynamic)
 
@@ -160,4 +164,4 @@ class Application:
             description_formatted = '\t' + \
                 '\n\t'.join(result.description.split('\n'))
             print(f"{result.generating_analysis} - detected smells {result.smells_detected}\n"
-                  f"{description_formatted}")
+                  f"{description_formatted}\n")
