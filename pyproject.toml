@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "k8s-purifier"
+name = "kube-hound"
 version = "0.1.0"
 description = "Automatic smell detection and scanning for Kubernetes clusters"
 authors = ["gio54321 <g.dellimmagine@gmail.com>"]

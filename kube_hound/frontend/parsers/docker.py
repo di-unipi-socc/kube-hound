@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import List
-from k8spurifier.frontend.parsers.abstractparser import ApplicationParser
-from k8spurifier.frontend.repositories import Repository
-from k8spurifier.applicationobject import ApplicationObject
+from kube_hound.frontend.parsers.abstractparser import ApplicationParser
+from kube_hound.frontend.repositories import Repository
+from kube_hound.applicationobject import ApplicationObject
 
 
 class DockerfileParser(ApplicationParser):

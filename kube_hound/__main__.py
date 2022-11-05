@@ -2,13 +2,13 @@ import argparse
 from pathlib import Path
 import sys
 
-from k8spurifier.hound import Hound
+from kube_hound.hound import Hound
 from loguru import logger
 
 
 def main():
     parser = argparse.ArgumentParser(
-        prog='k8spurifier', description='k8spurifier: detect security'
+        prog='kube-hound', description='kube-hound: detect security'
         'smells in kubernetes based applications')
 
     parser.add_argument('-c', '--context', dest='context', default='.',

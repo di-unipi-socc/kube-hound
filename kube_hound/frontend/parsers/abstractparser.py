@@ -1,6 +1,6 @@
 import abc
 from typing import List
-from k8spurifier.applicationobject import ApplicationObject
+from kube_hound.applicationobject import ApplicationObject
 
 
 class ApplicationParser(metaclass=abc.ABCMeta):

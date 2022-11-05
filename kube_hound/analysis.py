@@ -1,6 +1,6 @@
 import abc
-from k8spurifier.applicationobject import ApplicationObject
-from k8spurifier.smells import Smell
+from kube_hound.applicationobject import ApplicationObject
+from kube_hound.smells import Smell
 from typing import List, Mapping, Set
 
 

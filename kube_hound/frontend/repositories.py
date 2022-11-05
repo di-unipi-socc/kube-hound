@@ -17,7 +17,7 @@ class RepositoriesLocalFolderManager:
     """
 
     def __init__(self, basedir: Path = Path('/tmp'),
-                 prefix: str = 'k8spurifier') -> None:
+                 prefix: str = 'kube-hound') -> None:
         if not isinstance(basedir, Path):
             raise TypeError('basedir has to be a Path object')
         if not isinstance(prefix, str):

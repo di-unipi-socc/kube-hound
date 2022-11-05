@@ -1,7 +1,7 @@
 from typing import Dict
 from typing import Optional
 
-from k8spurifier.applicationobject import ApplicationObject
+from kube_hound.applicationobject import ApplicationObject
 
 
 class Service:

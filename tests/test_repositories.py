@@ -1,6 +1,6 @@
 from pathlib import Path
 import pytest
-from k8spurifier.frontend.repositories import LocalFolderRefRepository, \
+from kube_hound.frontend.repositories import LocalFolderRefRepository, \
     Repository
 
 

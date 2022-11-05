@@ -1,14 +1,14 @@
 from time import sleep
 from typing import List, Mapping
-from k8spurifier.analysis import AnalysisResult, StaticAnalysis
+from kube_hound.analysis import AnalysisResult, StaticAnalysis
 from loguru import logger
 import json
 import docker
 import requests
 
 
-from k8spurifier.applicationobject import ApplicationObject
-from k8spurifier.smells import Smell
+from kube_hound.applicationobject import ApplicationObject
+from kube_hound.smells import Smell
 
 
 class KubesecIntegrationAnalysis(StaticAnalysis):

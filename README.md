@@ -1,29 +1,35 @@
-# K8spurifier
+# Kube-hound
 
-K8spurifier is an automatic security smell detection tool targeting kubernetes deployed microservice applications.
+Kube-hound is an automatic security smell detection tool targeting kubernetes deployed microservice applications.
+
+Currently there are five analyses implemented:
+- OpenAPI securityScheme
+- Kubesec.io integration
+- Secrets in environment variables
+- External-IP detection
+- Pod-to-Pod traffic inspection
+
+The folder `data/examples` contains various examples of analyses, to get a feel of what this tool does.
 
 ## Running
 The command line interface can be run via poetry
 ```
-$ poetry run python -m k8spurifier
+poetry run python -m kube_hound
 ```
 
 ## Testing
 
-To run unit tests
-```sh
-$ ./scripts/run_tests.sh
-```
+
 
 Preconfigured yaml config files for Online boutique and Sock shop can be found in the `test_files` folder.
-To run the tool on those application do
+To run Kube-hound on those application run:
+
 ```
 $ ./scripts/run_online_boutique.sh
-
 $ ./scripts/run_sock_shop.sh
 ```
 
-## Type checking and linting
-```
-$ ./scripts/typecheck_and_lint.sh
+To run unit tests
+```sh
+./scripts/run_tests.sh
 ```

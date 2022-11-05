@@ -1,7 +1,7 @@
 from typing import Dict, List, Mapping, Optional, Type
-from k8spurifier.analysis import Analysis, AnalysisResult, DynamicAnalysis, StaticAnalysis
-from k8spurifier.applicationobject import ApplicationObject
-from k8spurifier.builtin_analyses import all_analyses
+from kube_hound.analysis import Analysis, AnalysisResult, DynamicAnalysis, StaticAnalysis
+from kube_hound.applicationobject import ApplicationObject
+from kube_hound.builtin_analyses import all_analyses
 from loguru import logger
 
 

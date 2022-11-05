@@ -4,7 +4,7 @@ from typing import Dict
 import yaml
 from loguru import logger
 
-from k8spurifier.frontend.repositories import GitRemoteRepository, \
+from kube_hound.frontend.repositories import GitRemoteRepository, \
     LocalFolderRefRepository, Repository
 
 

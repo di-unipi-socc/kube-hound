@@ -1,10 +1,10 @@
 from typing import Dict, List, Mapping, Optional
-from k8spurifier.analysis import AnalysisResult, StaticAnalysis
+from kube_hound.analysis import AnalysisResult, StaticAnalysis
 from loguru import logger
 
 
-from k8spurifier.applicationobject import ApplicationObject
-from k8spurifier.smells import Smell
+from kube_hound.applicationobject import ApplicationObject
+from kube_hound.smells import Smell
 
 
 class SecuritySchemesAnalysis(StaticAnalysis):

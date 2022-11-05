@@ -3,13 +3,13 @@ import signal
 import subprocess
 from time import sleep
 from typing import List, Mapping
-from k8spurifier.analysis import AnalysisResult, DynamicAnalysis
+from kube_hound.analysis import AnalysisResult, DynamicAnalysis
 from loguru import logger
 from kubernetes import client
 import pyshark
 
-from k8spurifier.applicationobject import ApplicationObject
-from k8spurifier.smells import Smell
+from kube_hound.applicationobject import ApplicationObject
+from kube_hound.smells import Smell
 
 # woarkaround to make pyshark work
 import nest_asyncio

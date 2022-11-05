@@ -1,14 +1,14 @@
 from pathlib import Path
 from typing import Dict, List, Optional
-from k8spurifier.analysis import AnalysisResult
-from k8spurifier.scheduler import AnalysisScheduler
-from k8spurifier.applicationobject import ApplicationObject
-from k8spurifier.frontend.config import ApplicationConfig
-from k8spurifier.frontend.parsers.docker import DockerfileParser
-from k8spurifier.frontend.parsers.kubernetes import KubernetesConfigParser
+from kube_hound.analysis import AnalysisResult
+from kube_hound.scheduler import AnalysisScheduler
+from kube_hound.applicationobject import ApplicationObject
+from kube_hound.frontend.config import ApplicationConfig
+from kube_hound.frontend.parsers.docker import DockerfileParser
+from kube_hound.frontend.parsers.kubernetes import KubernetesConfigParser
 from loguru import logger
-from k8spurifier.frontend.parsers.openapi import OpenAPIParser
-from k8spurifier.service import Service
+from kube_hound.frontend.parsers.openapi import OpenAPIParser
+from kube_hound.service import Service
 from kubernetes import config
 
 
