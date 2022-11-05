@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from typing import List
 from kube_hound.applicationobject import ApplicationObject
@@ -27,9 +28,14 @@ class OpenAPIParser(ApplicationParser):
                 f'The openAPI specification {openapi_path} does not exists, skipping')
             return []
 
-        # TODO add support for json openapi specifications
         f = open(openapi_path)
-        document = yaml.safe_load(f)
+        if openapi_path.name.endswith('yaml'):
+            document = yaml.safe_load(f)
+        elif openapi_path.name.endswith('json'):
+            document = json.load(f)
+        else:
+            logger.warning(f"{openapi_path}: file format not recognized")
+            return []
 
         return [ApplicationObject('openapi', openapi_path, data={
             'cache': document
