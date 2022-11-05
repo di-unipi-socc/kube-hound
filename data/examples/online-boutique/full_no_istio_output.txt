@@ -1,0 +1,517 @@
+Analysis results:
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in cartservice.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in cartservice.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in cartservice.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in cartservice.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in frontend.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in frontend.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in frontend.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in frontend.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in loadgenerator.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in loadgenerator.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in loadgenerator.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in loadgenerator.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in adservice.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in adservice.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in adservice.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in adservice.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in productcatalogservice.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in productcatalogservice.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in productcatalogservice.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in productcatalogservice.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in shippingservice.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in shippingservice.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in shippingservice.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in shippingservice.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in paymentservice.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in paymentservice.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in paymentservice.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in paymentservice.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in checkoutservice.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in checkoutservice.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in checkoutservice.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in checkoutservice.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in currencyservice.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in currencyservice.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in currencyservice.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in currencyservice.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in recommendationservice.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in recommendationservice.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in recommendationservice.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in recommendationservice.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in redis.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in redis.yaml
+	selector: .spec .serviceAccountName
+	reason: Service accounts restrict Kubernetes API access and should be configured with least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in redis.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in redis.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in redis.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in emailservice.yaml
+	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
+	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in emailservice.yaml
+	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
+	reason: Seccomp profiles set minimum privilege and secure against unknown threats
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in emailservice.yaml
+	selector: containers[] .securityContext .runAsNonRoot == true
+	reason: Force the running image to run as a non-root user to ensure least privilege
+
+KubeSec analysis - detected smells {UPM}
+	Kubesec.io found potential problems in emailservice.yaml
+	selector: containers[] .securityContext .runAsUser -gt 10000
+	reason: Run as a high-UID user to avoid conflicts with the host's user table
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod adservice-7fc9c6dc8c-9prcr, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod cartservice-68cc8bbcd7-tjtrf, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod checkoutservice-6b65546567-mxc4f, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod currencyservice-f76ddc545-9xpsz, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod emailservice-9b4f75d8c-kvm8w, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod emailservice-9b4f75d8c-kvm8w, container server
+	variable: GPG_KEY=E3FF************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod emailservice-9b4f75d8c-kvm8w, container server
+	variable: PYTHON_GET_PIP_SHA256=5aef************************************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod frontend-547c944df9-97lv5, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod loadgenerator-7b8f5569d9-xb8xt, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod loadgenerator-7b8f5569d9-xb8xt, container main
+	variable: GPG_KEY=E3FF************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod loadgenerator-7b8f5569d9-xb8xt, container main
+	variable: PYTHON_GET_PIP_SHA256=5aef************************************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod paymentservice-5b8fb945f-pc9ns, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod productcatalogservice-84889bfb4c-b6mzz, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod recommendationservice-64fb6b898f-nn42l, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod recommendationservice-64fb6b898f-nn42l, container server
+	variable: GPG_KEY=E3FF************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod recommendationservice-64fb6b898f-nn42l, container server
+	variable: PYTHON_GET_PIP_SHA256=5aef************************************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod redis-cart-58648d854-zxznq, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod redis-cart-58648d854-zxznq, container redis
+	variable: REDIS_DOWNLOAD_SHA=6705************************************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod shippingservice-79b8b4589c-8wldf, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod istio-egressgateway-557dfbc477-bqxhf, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod istio-ingressgateway-ff458948f-xhkf2, container istio-proxy
+	variable: ISTIO_META_ISTIO_PROXY_SHA=94bd************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod csi-linode-controller-0, container linode-csi-plugin
+	variable: LINODE_TOKEN=f882************************************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod csi-linode-node-ghb42, container csi-linode-plugin
+	variable: LINODE_TOKEN=f882************************************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod csi-linode-node-kjtmc, container csi-linode-plugin
+	variable: LINODE_TOKEN=f882************************************************************
+	reason: Hex High Entropy String
+
+Secrets in environment variables analysis - detected smells {HS}
+	Detected secret in pod csi-linode-node-v4tts, container csi-linode-plugin
+	variable: LINODE_TOKEN=f882************************************************************
+	reason: Hex High Entropy String
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod adservice-7fc9c6dc8c-9prcr
+	here is a sample of the packets (HTTP2, maybe gRPC?):
+	HTTP2 10.2.1.113 -> 10.2.0.9
+	HTTP2 10.2.0.9 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.0.9
+	HTTP2 10.2.0.9 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.0.9
+	HTTP2 10.2.0.9 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.0.9
+	HTTP2 10.2.0.9 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.0.9
+	HTTP2 10.2.0.9 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.0.9
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod cartservice-68cc8bbcd7-tjtrf
+	here is a sample of the packets (HTTP2, maybe gRPC?):
+	HTTP2 10.2.1.113 -> 10.2.2.115
+	HTTP2 10.2.2.115 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.115
+	HTTP2 10.2.2.115 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.115
+	HTTP2 10.2.2.115 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.115
+	HTTP2 10.2.2.115 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.115
+	HTTP2 10.2.2.115 -> 10.2.1.113
+	HTTP2 10.2.1.112 -> 10.2.2.115
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod checkoutservice-6b65546567-mxc4f
+	here is a sample of the packets (HTTP2, maybe gRPC?):
+	HTTP2 10.2.1.113 -> 10.2.1.112
+	HTTP2 10.2.1.112 -> 10.2.2.115
+	HTTP2 10.2.2.115 -> 10.2.1.112
+	HTTP2 10.2.1.112 -> 10.2.1.114
+	HTTP2 10.2.1.114 -> 10.2.1.112
+	HTTP2 10.2.1.112 -> 10.2.2.116
+	HTTP2 10.2.2.116 -> 10.2.1.112
+	HTTP2 10.2.1.112 -> 10.2.1.114
+	HTTP2 10.2.1.114 -> 10.2.1.112
+	HTTP2 10.2.1.112 -> 10.2.2.116
+	HTTP2 10.2.2.116 -> 10.2.1.112
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod currencyservice-f76ddc545-9xpsz
+	here is a sample of the packets (HTTP2, maybe gRPC?):
+	HTTP2 10.2.2.116 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.116
+	HTTP2 10.2.2.116 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.116
+	HTTP2 10.2.2.116 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.116
+	HTTP2 10.2.2.116 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.116
+	HTTP2 10.2.2.116 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.116
+	HTTP2 10.2.2.116 -> 10.2.1.113
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod emailservice-9b4f75d8c-kvm8w
+	here is a sample of the packets (HTTP2, maybe gRPC?):
+	HTTP2 10.2.1.112 -> 10.2.2.112
+	HTTP2 10.2.2.112 -> 10.2.1.112
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod frontend-547c944df9-97lv5
+	here is a sample of the packets (HTTP):
+	HTTP 10.2.1.115 -> 10.2.1.113 : POST /setCurrency HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : HTTP/1.1 302 Found
+	HTTP 10.2.1.115 -> 10.2.1.113 : GET / HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : 1885
+	HTTP 10.2.1.115 -> 10.2.1.113 : GET /cart HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : b46
+	HTTP 10.2.1.115 -> 10.2.1.113 : GET /product/9SIQT8TOJO HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : HTTP/1.1 200 OK
+	HTTP 10.2.1.115 -> 10.2.1.113 : POST /cart HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : HTTP/1.1 302 Found
+	HTTP 10.2.1.115 -> 10.2.1.113 : GET /cart HTTP/1.1
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod loadgenerator-7b8f5569d9-xb8xt
+	here is a sample of the packets (HTTP):
+	HTTP 10.2.1.115 -> 10.2.1.113 : POST /setCurrency HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : HTTP/1.1 302 Found
+	HTTP 10.2.1.115 -> 10.2.1.113 : GET / HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : 1885
+	HTTP 10.2.1.115 -> 10.2.1.113 : GET /cart HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : b46
+	HTTP 10.2.1.115 -> 10.2.1.113 : GET /product/9SIQT8TOJO HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : HTTP/1.1 200 OK
+	HTTP 10.2.1.115 -> 10.2.1.113 : POST /cart HTTP/1.1
+	HTTP 10.2.1.113 -> 10.2.1.115 : HTTP/1.1 302 Found
+	HTTP 10.2.1.115 -> 10.2.1.113 : GET /cart HTTP/1.1
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod paymentservice-5b8fb945f-pc9ns
+	here is a sample of the packets (HTTP2, maybe gRPC?):
+	HTTP2 10.2.1.112 -> 10.2.2.114
+	HTTP2 10.2.2.114 -> 10.2.1.112
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod productcatalogservice-84889bfb4c-b6mzz
+	here is a sample of the packets (HTTP2, maybe gRPC?):
+	HTTP2 10.2.1.113 -> 10.2.1.114
+	HTTP2 10.2.1.114 -> 10.2.1.113
+	HTTP2 10.2.2.113 -> 10.2.1.114
+	HTTP2 10.2.1.114 -> 10.2.2.113
+	HTTP2 10.2.1.113 -> 10.2.1.114
+	HTTP2 10.2.1.114 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.1.114
+	HTTP2 10.2.1.114 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.1.114
+	HTTP2 10.2.1.114 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.1.114
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod recommendationservice-64fb6b898f-nn42l
+	here is a sample of the packets (HTTP2, maybe gRPC?):
+	HTTP2 10.2.1.114 -> 10.2.2.113
+	HTTP2 10.2.2.113 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.113
+	HTTP2 10.2.2.113 -> 10.2.1.114
+	HTTP2 10.2.1.114 -> 10.2.2.113
+	HTTP2 10.2.2.113 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.113
+	HTTP2 10.2.2.113 -> 10.2.1.114
+	HTTP2 10.2.1.114 -> 10.2.2.113
+	HTTP2 10.2.2.113 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.113
+
+Traffic analysis - detected smells {NSC}
+	Unencrypted traffic detected in pod shippingservice-79b8b4589c-8wldf
+	here is a sample of the packets (HTTP2, maybe gRPC?):
+	HTTP2 10.2.1.113 -> 10.2.2.117
+	HTTP2 10.2.2.117 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.117
+	HTTP2 10.2.2.117 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.117
+	HTTP2 10.2.2.117 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.117
+	HTTP2 10.2.2.117 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.117
+	HTTP2 10.2.2.117 -> 10.2.1.113
+	HTTP2 10.2.1.113 -> 10.2.2.117

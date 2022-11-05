@@ -56,7 +56,14 @@ services:
     repository: main
     dockerfile: src/frontend/Dockerfile
 
+  - name: frontend-external
+    repository: main
+
   - name: adservice
     image: adservice
     repository: main
     dockerfile: src/adservice/Dockerfile
+
+properties:
+  frontend-external:
+    external: true
