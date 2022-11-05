@@ -72,9 +72,17 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
                         variable_name: str = response.split(
                             '\n')[int(entry['line_number']) - 1]
 
+                        # obfuscate value
+                        toks = variable_name.split('=', 1)
+                        if len(toks) != 2:
+                            variable_output = variable_name
+                        else:
+                            variable_output =\
+                                f"{toks[0]}={toks[1][:4]}{'*' * max(0, len(toks[1])-4)}"
+
                         description = f"Detected secret in pod {pod_name}" +\
                             f", container {container_name}\n" +\
-                            f"variable: {variable_name}\nreason: {entry['type']}"
+                            f"variable: {variable_output}\nreason: {entry['type']}"
 
                         output_results.append(
                             AnalysisResult(description, {Smell.HS}))
