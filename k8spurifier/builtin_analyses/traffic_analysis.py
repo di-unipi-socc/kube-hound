@@ -38,38 +38,89 @@ class TrafficAnalysis(DynamicAnalysis):
         out_files = self.__capture_traffic(
             pod_names, TRAFFIC_MONITORING_TIME)
 
-        nodes_ips = self.__get_nodes_ips()
+        self.nodes_ips = self.__get_nodes_ips()
 
         for capture, pod_name in zip(out_files, pod_names):
-            cap = pyshark.FileCapture(capture)
-            count = 0
-            out_packets = []
-            for packet in cap:
-                if 'HTTP' in packet:
-                    if count > MAX_RESULTS_SHOWN:
-                        break
 
-                    # filter healthchecks
-                    if packet.ip.src in nodes_ips or packet.ip.dst in nodes_ips:
-                        continue
+            # try to get HTTP packets
+            try:
+                http_packets = self.__get_unencrypted_packets(
+                    capture, http2=False)
+                if len(http_packets) > 0:
+                    smell_description = f"Unencrypted traffic detected in pod {pod_name}\n" +\
+                        f"here is a sample of the packets (HTTP):\n" +\
+                        '\n'.join(http_packets)
+                    out_smells.append(AnalysisResult(
+                        smell_description, {Smell.NSC}))
+                    continue
+            except:
+                pass
 
-                    hex_payload = packet.tcp.payload
-                    payload = bytes([int(x, 16)
-                                    for x in hex_payload.split(':')])
-                    first_line = payload.split(b'\r\n')[0]
-
-                    description = f"HTTP {packet.ip.src} -> {packet.ip.dst} : {first_line.decode()}"
-                    out_packets.append(description)
-                    count += 1
-
-            if count > 0:
-                smell_description = f"Unencrypted traffic detected in pod {pod_name}\n" +\
-                    f"here are the first {MAX_RESULTS_SHOWN} packets:\n" +\
-                    '\n'.join(out_packets)
-                out_smells.append(AnalysisResult(
-                    smell_description, {Smell.NSC}))
+            # try to get HTTP2 packets
+            try:
+                http2_packets = self.__get_unencrypted_packets(
+                    capture, http2=True)
+                if len(http2_packets) > 0:
+                    smell_description = f"Unencrypted traffic detected in pod {pod_name}\n" +\
+                        f"here is a sample of the packets (HTTP2, maybe gRPC?):\n" +\
+                        '\n'.join(http2_packets)
+                    out_smells.append(AnalysisResult(
+                        smell_description, {Smell.NSC}))
+                    continue
+            except:
+                pass
 
         return out_smells
+
+    def __get_unencrypted_packets(self, capture, http2: bool):
+        if not http2:
+            cap = pyshark.FileCapture(capture)
+        else:
+            cap = pyshark.FileCapture(
+                capture, decode_as={'tcp.port==0-65536': 'http2'})
+
+        count = 0
+        out_packets = []
+        for packet in cap:
+            if count > MAX_RESULTS_SHOWN:
+                break
+
+            # consider only IP packets
+            if 'IP' not in packet:
+                continue
+
+            # filter healthchecks
+            if packet.ip.src in self.nodes_ips or packet.ip.dst in self.nodes_ips:
+                continue
+
+            if 'HTTP' in packet:
+                hex_payload = packet.tcp.payload
+                payload = bytes([int(x, 16)
+                                for x in hex_payload.split(':')])
+                first_line = payload.split(b'\n')[0].split(b'\r')[0]
+
+                try:
+                    first_line_decoded = first_line.decode()
+
+                except:
+                    # tshark will create a false positive HTTP layer also on encrypted packets
+                    # as an euristic, we assume that if we cannot decode the bytes as plaintext,
+                    # then it is encrypted
+                    continue
+
+                description = f"HTTP {packet.ip.src} -> {packet.ip.dst} : {first_line_decoded}"
+                out_packets.append(description)
+                count += 1
+
+            if 'HTTP2' in packet:
+                # filter out false positives (empty HTTP2 layer)
+                if not packet.http2.has_field('length'):
+                    continue
+
+                description = f"HTTP2 {packet.ip.src} -> {packet.ip.dst}"
+                out_packets.append(description)
+                count += 1
+        return out_packets
 
     def __capture_traffic(self, pod_names, timeout):
         logger.debug('spawning ksniff pods')
