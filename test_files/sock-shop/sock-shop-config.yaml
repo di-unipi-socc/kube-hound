@@ -54,30 +54,34 @@ services:
     repository: orders
     dockerfile: docker/orders/Dockerfile
     openapi: api-spec/orders.json
-  
+
   - name: payment
     image: weaveworksdemos/payment:0.4.3
     repository: payment
     dockerfile: docker/payment/Dockerfile
     openapi: api-spec/payment.json
-  
+
   - name: queue-master
     image: weaveworksdemos/queue-master:0.3.1
     repository: queue-master
     dockerfile: Dockerfile
-  
+
   - name: shipping
     image: weaveworksdemos/shipping:0.4.8
     repository: shipping
     dockerfile: docker/shipping/Dockerfile
-  
+
   - name: user
     image: weaveworksdemos/user:0.4.7
     repository: user
     dockerfile: Dockerfile
     openapi: apispec/user.json
-  
+
   - name: user-db
     image: weaveworksdemos/user-db:0.3.0
     repository: user
     dockerfile: docker/user-db/Dockerfile
+
+properties:
+  front-end:
+    external: true
