@@ -31,12 +31,15 @@ class TrafficAnalysis(DynamicAnalysis):
         out_smells = []
 
         logger.debug('retrieving pod names')
+
+        namespace = 'default'
+
         self.v1 = client.CoreV1Api()
-        pods = self.v1.list_namespaced_pod('default')
+        pods = self.v1.list_namespaced_pod(namespace)
         pod_names = [p.metadata.name for p in pods.items]
 
         out_files = self.__capture_traffic(
-            pod_names, TRAFFIC_MONITORING_TIME)
+            pod_names, namespace, TRAFFIC_MONITORING_TIME)
 
         self.nodes_ips = self.__get_nodes_ips()
 
@@ -122,12 +125,12 @@ class TrafficAnalysis(DynamicAnalysis):
                 count += 1
         return out_packets
 
-    def __capture_traffic(self, pod_names, timeout):
+    def __capture_traffic(self, pod_names, namespace, timeout):
         logger.debug('spawning ksniff pods')
         processes = []
         out_files = []
         for pod in pod_names:
-            process, out_file = self.__spawn_traffic_container(pod)
+            process, out_file = self.__spawn_traffic_container(pod, namespace)
             processes.append(process)
             out_files.append(out_file)
 
@@ -137,7 +140,7 @@ class TrafficAnalysis(DynamicAnalysis):
 
         # cleanup ksniff pods
         logger.debug('cleaning up ksniff pods')
-        pods = self.v1.list_namespaced_pod('default')
+        pods = self.v1.list_namespaced_pod(namespace)
         for pod in pods.items:
             app = pod.metadata.labels.get('app')
             if app == 'ksniff':
@@ -147,10 +150,10 @@ class TrafficAnalysis(DynamicAnalysis):
 
         return out_files
 
-    def __spawn_traffic_container(self, pod_name: str):
+    def __spawn_traffic_container(self, pod_name: str, namespace: str):
         logger.debug(f'spawning snffer for {pod_name}')
         filename = f'/tmp/{pod_name}.pcap'
-        cmd = f"kubectl sniff -p -v -i eth0 -o {filename} {pod_name}"
+        cmd = f"kubectl sniff -p -v -i eth0 -n {namespace} -o {filename} {pod_name}"
         logger.debug('command:', cmd)
         return subprocess.Popen(cmd, shell=True,
                                 stdout=subprocess.PIPE,
