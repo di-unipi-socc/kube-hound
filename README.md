@@ -12,7 +12,14 @@ Currently there are five analyses implemented:
 The folder `data/examples` contains various examples of analyses, to get a feel of what this tool does.
 
 ## Running
-The command line interface can be run via poetry
+
+Install the python dependencies
+```
+poetry install
+```
+
+
+Run the command line interface
 ```
 poetry run python -m kube_hound
 ```
