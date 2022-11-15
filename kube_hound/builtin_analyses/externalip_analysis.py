@@ -31,8 +31,10 @@ class ExternalIpAnalysis(DynamicAnalysis):
 
         output_smells = []
 
+        namespace = 'default'
+
         v1 = client.CoreV1Api()
-        ret = v1.list_service_for_all_namespaces(watch=False)
+        ret = v1.list_namespaced_service(namespace, watch=False)
 
         data = ret.to_dict()
         data = data.get('items')
@@ -47,27 +49,25 @@ class ExternalIpAnalysis(DynamicAnalysis):
             load_balancer_status = status.get(
                 'load_balancer').get('ingress')
             if load_balancer_status is not None and len(load_balancer_status) > 0:
-                if str(service_name) in services_mapping:
-                    properties = services_mapping[service_name]
+                properties = services_mapping.get(service_name)
+                logger.debug(properties)
+                if properties is None:
+                    external = False
+                else:
+                    external = properties.get('external')
 
-                    logger.debug(properties)
-                    if properties is None:
-                        external = False
-                    else:
-                        external = properties.get('external')
+                if external is True:
+                    continue
 
-                    if external is True:
-                        continue
+                load_balancer_info = load_balancer_status[0]
+                ip = load_balancer_info.get('ip')
+                host = load_balancer_info.get('host')
 
-                    load_balancer_info = load_balancer_status[0]
-                    ip = load_balancer_info.get('ip')
-                    host = load_balancer_info.get('host')
+                description = f"External service detected: {service_name}\n" +\
+                    f"exposed on external ip {ip if ip is not None else 'unknown'}, " +\
+                    f"on host {host if host is not None else 'unknown'}"
 
-                    description = f"External service detected: {service_name}\n" +\
-                        f"exposed on external ip {ip if ip is not None else 'unknown'}, " +\
-                        f"on host {host if host is not None else 'unknown'}"
-
-                    output_smells.append(
-                        AnalysisResult(description, {Smell.PAM}))
+                output_smells.append(
+                    AnalysisResult(description, {Smell.PAM}))
 
         return output_smells
