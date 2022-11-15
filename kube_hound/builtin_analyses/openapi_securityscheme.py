@@ -105,7 +105,7 @@ class SecuritySchemesAnalysis(StaticAnalysis):
         return scheme.get('type') == 'http' and \
             scheme.get('scheme') == 'basic'
 
-    def __shervice_can_use_basic_auth(self, properties):
+    def __service_can_use_basic_auth(self, properties):
         """
         Returns True is the service can use Basic HTTP authorization,
         based on the service properties
