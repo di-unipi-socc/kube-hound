@@ -8,6 +8,12 @@
 
 ## Tool output
 
+### Command to run
+
+```
+./data/examples/kubesec/run.sh
+```
+
 ### No resources specification
 ```
 KubeSec analysis - detected smells {UPM}
@@ -82,11 +88,6 @@ KubeSec analysis - detected smells {UPM}
 	Kubesec.io found potential problems in echo1_no_resources.yaml
 	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
 	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
-
-KubeSec analysis - detected smells {UPM}
-	Kubesec.io found potential problems in echo1_no_resources.yaml
-	selector: .spec .serviceAccountName
-	reason: Service accounts restrict Kubernetes API access and should be configured with least privilege
 
 KubeSec analysis - detected smells {UPM}
 	Kubesec.io found potential problems in echo1_no_resources.yaml

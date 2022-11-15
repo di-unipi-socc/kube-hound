@@ -12,15 +12,18 @@
 ## Tool output
 
 ```
+$ ./data/examples/openapi_security/run.sh
+
+Analysis results:
 SecurityScheme analysis - detected smells {IAC}
-	SecurityScheme not specified in echo_no_schemes.yaml
+    SecurityScheme not specified in echo_no_schemes.yaml
 
 SecurityScheme analysis - detected smells {IAC}
-	No security field specified in echo_no_security.yaml, post /echo
+    No security field specified in echo_no_security.yaml, post /echo
 
 SecurityScheme analysis - detected smells {IAC}
-	Empty field specified in echo_security_override.yaml, post /echo
+    Empty field specified in echo_security_override.yaml, post /echo
 
-SecurityScheme analysis - detected smells {CA, MUA}
-	Detected basic http authorization in echo_basic_auth.yaml, post /echo
+SecurityScheme analysis - detected smells {MUA, CA}
+    Detected basic http authorization in echo_basic_auth.yaml, post /echo
 ```
