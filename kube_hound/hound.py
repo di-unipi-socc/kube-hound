@@ -1,6 +1,6 @@
 from pathlib import Path
-from typing import Dict, List, Optional
-from kube_hound.analysis import AnalysisResult
+from typing import Dict, List, Optional, Type
+from kube_hound.analysis import Analysis, AnalysisResult
 from kube_hound.scheduler import AnalysisScheduler
 from kube_hound.applicationobject import ApplicationObject
 from kube_hound.frontend.config import ApplicationConfig
@@ -22,6 +22,8 @@ class Hound:
         # flags to run analyses types
         self.run_static = True
         self.run_dynamic = True
+
+        self.scheduler = AnalysisScheduler([])
 
     def set_config_path(self, config_path) -> None:
         self.config_path = config_path
@@ -150,12 +152,13 @@ class Hound:
 
     def run_analyses(self, analysis_list=None):
         logger.info('running analyses on the application')
-        scheduler = AnalysisScheduler(self.application_objects)
+
+        self.scheduler.set_application_objects(self.application_objects)
 
         if analysis_list != None:
-            scheduler.analysis_list = analysis_list
+            self.scheduler.analysis_list = analysis_list
 
-        self.analysis_results = scheduler.run_analyses(
+        self.analysis_results = self.scheduler.run_analyses(
             self.run_static, self.run_dynamic)
 
     def show_results(self):
@@ -165,3 +168,6 @@ class Hound:
                 '\n\t'.join(result.description.split('\n'))
             print(f"{result.generating_analysis} - detected smells {result.smells_detected}\n"
                   f"{description_formatted}\n")
+
+    def register_analysis(self, analysis: Type[Analysis]):
+        self.scheduler.register_analysis(analysis)

@@ -6,7 +6,7 @@ from loguru import logger
 
 
 class AnalysisScheduler():
-    def __init__(self, application_objects: List[ApplicationObject]):
+    def __init__(self, application_objects: List[ApplicationObject] = []):
         self.application_objects = application_objects
         self.object_type_mapping = self.__compute_type_mapping(
             application_objects)
@@ -26,6 +26,15 @@ class AnalysisScheduler():
                 resulting_mapping[obj.type] = [obj]
 
         return resulting_mapping
+
+    def set_application_objects(self, application_objects: List[ApplicationObject]):
+        self.application_objects = application_objects
+        self.object_type_mapping = self.__compute_type_mapping(
+            application_objects)
+
+    def register_analysis(self, analysis: Type[Analysis]):
+        self.analyses.append(analysis)
+        logger.info(f"analysis {analysis.analysis_name} registered")
 
     def run_analyses(self, run_static: bool, run_dynamic: bool) -> List[AnalysisResult]:
         total_analysis_results = []
