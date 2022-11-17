@@ -22,7 +22,7 @@ poetry run python -m kube_hound
 ```
 
 ```
-usage: kube-hound [-h] [-c CONTEXT] [-d] [-s] [-l ANALYSIS_LIST] [-v] [-vv] config_file
+usage: kube-hound [-h] [-c CONTEXT] [-d] [-s] [-l ANALYSIS_LIST] [--json] [-v] [-vv] config_file
 
 kube-hound: detect securitysmells in kubernetes based applications
 
@@ -36,6 +36,7 @@ optional arguments:
   -d                    run only dynamic analyses
   -s                    run only static analyses
   -l ANALYSIS_LIST      comma separated list of analysis to run (default all available)
+  --json                output results in a json object
   -v                    verbose output
   -vv                   more verbose output
 ```
