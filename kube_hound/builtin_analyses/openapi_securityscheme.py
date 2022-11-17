@@ -84,7 +84,7 @@ class SecuritySchemesAnalysis(StaticAnalysis):
             # If the endpoint is enacting Basic authorization scheme, and it shouldn't,
             # output the CA and MUA smells
             if self.__is_basic_auth(scheme_info) \
-                    and not self.__shervice_can_use_basic_auth(service_prop):
+                    and not self.__service_can_use_basic_auth(service_prop):
                 description = f"Detected basic http authorization in {object_name}, {method} {path}"
                 return AnalysisResult(description, {Smell.MUA, Smell.CA})
 
