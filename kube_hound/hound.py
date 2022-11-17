@@ -10,6 +10,7 @@ from loguru import logger
 from kube_hound.frontend.parsers.openapi import OpenAPIParser
 from kube_hound.service import Service
 from kubernetes import config
+import json
 
 
 class Hound:
@@ -161,13 +162,23 @@ class Hound:
         self.analysis_results = self.scheduler.run_analyses(
             self.run_static, self.run_dynamic)
 
-    def show_results(self):
-        print('Analysis results:')
-        for result in self.analysis_results:
-            description_formatted = '\t' + \
-                '\n\t'.join(result.description.split('\n'))
-            print(f"{result.generating_analysis} - detected smells {result.smells_detected}\n"
-                  f"{description_formatted}\n")
+    def show_results(self, json_output=False):
+        if json_output:
+            output_obj = []
+            for result in self.analysis_results:
+                output_obj.append({
+                    'analysis': result.generating_analysis,
+                    'smells': list(map(repr, result.smells_detected)),
+                    'description': result.description
+                })
+            print(json.dumps(output_obj))
+        else:
+            print('Analysis results:')
+            for result in self.analysis_results:
+                description_formatted = '\t' + \
+                    '\n\t'.join(result.description.split('\n'))
+                print(f"{result.generating_analysis} - detected smells {result.smells_detected}\n"
+                      f"{description_formatted}\n")
 
     def register_analysis(self, analysis: Type[Analysis]):
         self.scheduler.register_analysis(analysis)
