@@ -25,33 +25,7 @@ kubectl apply -f ./release/kubernetes-manifests.yaml
 
 ## Highlights of analysis
 
-It was detected that all services run as root and do not have set up AppArmor and SecComp profiles:
-```
-KubeSec analysis - detected smells {UPM}
-	Kubesec.io found potential problems in cartservice.yaml
-	selector: .metadata .annotations ."container.apparmor.security.beta.kubernetes.io/nginx"
-	reason: Well defined AppArmor policies may provide greater protection from unknown threats. WARNING: NOT PRODUCTION READY
-
-KubeSec analysis - detected smells {UPM}
-	Kubesec.io found potential problems in cartservice.yaml
-	selector: .metadata .annotations ."container.seccomp.security.alpha.kubernetes.io/pod"
-	reason: Seccomp profiles set minimum privilege and secure against unknown threats
-
-KubeSec analysis - detected smells {UPM}
-	Kubesec.io found potential problems in cartservice.yaml
-	selector: containers[] .securityContext .runAsNonRoot == true
-	reason: Force the running image to run as a non-root user to ensure least privilege
-
-KubeSec analysis - detected smells {UPM}
-	Kubesec.io found potential problems in cartservice.yaml
-	selector: containers[] .securityContext .runAsUser -gt 10000
-	reason: Run as a high-UID user to avoid conflicts with the host's user table
-
-
-(similar for the other services)
-```
-
-With **Istio enabled**, no "Non-secured Service-to-Service communications" was detected.
+With **Istio enabled**, no "Non-secured Service-to-Service communications" smells was detected.
 
 With **Istio disabled**, it was detected unencrypted HTTP traffic from the load generator to the gateway, and unencrypted HTTP2 traffic between the services:
 
@@ -85,15 +59,4 @@ Traffic analysis - detected smells {NSC}
 	HTTP2 10.2.2.36 -> 10.2.1.34
 	HTTP2 10.2.1.34 -> 10.2.2.36
 	HTTP2 10.2.2.36 -> 10.2.1.34
-```
-
-## Linode API token
-
-One interesting thing is that running these tests on a Linode Kubernetes cluster, the "Secrets in environment variables" analysis will output that the linode Pods in the container (probably used for management) have a Linode API Token in their environment:
-
-```
-Secrets in environment variables analysis - detected smells {HS}
-	Detected secret in pod csi-linode-node-v4tts, container csi-linode-plugin
-	variable: LINODE_TOKEN=f882************************************************************
-	reason: Hex High Entropy String
 ```
