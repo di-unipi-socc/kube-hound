@@ -10,6 +10,8 @@ from kubernetes.stream import stream
 from detect_secrets import SecretsCollection
 from detect_secrets.settings import default_settings
 
+TMP_FILENAME = '/tmp/.env'
+
 
 class SecretsInEnvironmentAnalysis(DynamicAnalysis):
     analysis_id = 'secrets_in_env'
@@ -22,8 +24,10 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
 
         output_results = []
 
+        # get all running pods in the cluter
         v1 = client.CoreV1Api()
         ret = v1.list_pod_for_all_namespaces(watch=False)
+
         for i in ret.items:
             pod_name = i.metadata.name
             for status in i.status.container_statuses:
@@ -31,7 +35,7 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
                 logger.debug(
                     f'checking pod {pod_name}, container {container_name}')
                 try:
-                    # print(container_name)
+                    # retrieve the enviroment on the container
                     command = ['env']
                     response = stream(v1.connect_get_namespaced_pod_exec,
                                       pod_name,
@@ -56,23 +60,26 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
 
                     quoted_env_content += f'{toks[0]}="{toks[1]}"\n'
 
-                with open('/tmp/.env', 'w') as f:
+                with open(TMP_FILENAME, 'w') as f:
                     f.write(quoted_env_content)
 
+                # create a new SecretCollection object, to detect secrets
                 secrets = SecretsCollection()
 
+                # scan the retrieved environment
                 with default_settings():
-                    secrets.scan_file('/tmp/.env')
+                    secrets.scan_file(TMP_FILENAME)
 
+                # retrieve all the found secrets
                 result = secrets.json()
-                if '/tmp/.env' in result:
-                    secrets_found: List[Dict] = result['/tmp/.env']
+                if TMP_FILENAME in result:
+                    secrets_found: List[Dict] = result[TMP_FILENAME]
 
                     for entry in secrets_found:
                         variable_name: str = response.split(
                             '\n')[int(entry['line_number']) - 1]
 
-                        # obfuscate value
+                        # obfuscate value to not accidentally expose in the output
                         toks = variable_name.split('=', 1)
                         if len(toks) != 2:
                             variable_output = variable_name
@@ -80,6 +87,7 @@ class SecretsInEnvironmentAnalysis(DynamicAnalysis):
                             variable_output =\
                                 f"{toks[0]}={toks[1][:4]}{'*' * max(0, len(toks[1])-4)}"
 
+                        # report the smell
                         description = f"Detected secret in pod {pod_name}" +\
                             f", container {container_name}\n" +\
                             f"variable: {variable_output}\nreason: {entry['type']}"
