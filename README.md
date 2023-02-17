@@ -1,27 +1,27 @@
 # Kube-hound
 
-Kube-hound is an automatic security smell detection tool targeting kubernetes deployed microservice applications.
+Kube-hound is an automatic security smell detection tool targeting Kubernetes-based microservices applications.
 
-Currently there are five analyses implemented:
-- OpenAPI securityScheme
-- Kubesec.io integration
-- Secrets in environment variables
-- External-IP detection
-- Pod-to-Pod traffic inspection
+Currently it is supported the detection for:
 
-The folder `data/examples` contains various examples of analyses, to get a feel of what this tool does.
+- Insufficient Access Control in OpenAPI specfications
+- Multiple User Authentication in OpenAPI specifications
+- Unecessary privileges to microservices using Kubesec.io
+- Hardcoded Secrets in Environment Variables
+- Publicly Accessible Services using the External-IP field
+- Unencrypted Pod-to-Pod Traffic
 
-
+The folder `data/examples` contains various examples of analyses on different sample applications.
 
 ## Usage
 
 ### Command line interface
 
-```
+```sh
 poetry run python -m kube_hound
 ```
 
-```
+```text
 usage: kube-hound [-h] [-c CONTEXT] [-d] [-s] [-l ANALYSIS_LIST] [--json] [-v] [-vv] config_file
 
 kube-hound: detect securitysmells in kubernetes based applications
@@ -83,29 +83,23 @@ hound.run_analyses()
 hound.show_results()
 ```
 
-
 ## Dependencies
 
-Install the python dependencies
-```
+Kube-hound needs the Docker engine and kubectl installed.
+Additionally, to detect unencrypted Pod-to-Pod traffic, it needs [ksniff](https://github.com/eldadru/ksniff) installed.
+
+To install the python dependencies run
+
+```sh
 poetry install
 ```
 
-Kube-hound needs the Docker engine, kubectl and [ksniff](https://github.com/eldadru/ksniff) installed.
-
 ## Testing
-
-
 
 Preconfigured yaml config files for Online boutique and Sock shop can be found in the `test_files` folder.
 To run Kube-hound on those application run:
 
-```
-$ ./scripts/run_online_boutique.sh
-$ ./scripts/run_sock_shop.sh
-```
-
-To run unit tests
 ```sh
-./scripts/run_tests.sh
+./scripts/run_online_boutique.sh
+./scripts/run_sock_shop.sh
 ```
