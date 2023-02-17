@@ -7,7 +7,7 @@ from kube_hound.applicationobject import ApplicationObject
 from kube_hound.smells import Smell
 
 
-class SecuritySchemesAnalysis(StaticAnalysis):
+class InsufficientAccessControlOpenAPI(StaticAnalysis):
     analysis_id = 'openapi_securityscheme'
     analysis_name = 'SecurityScheme analysis'
     analysis_description = 'find unsecured endpoints in microservices API specifications'

@@ -13,7 +13,7 @@ from detect_secrets.settings import default_settings
 TMP_FILENAME = '/tmp/.env'
 
 
-class SecretsInEnvironmentAnalysis(DynamicAnalysis):
+class HardcodedSecretsInEnvironment(DynamicAnalysis):
     analysis_id = 'secrets_in_env'
     analysis_name = 'Secrets in environment variables analysis'
     analysis_description = 'detect hardcoded secrets in containers environment'

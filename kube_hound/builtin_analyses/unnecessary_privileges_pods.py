@@ -11,7 +11,7 @@ from kube_hound.applicationobject import ApplicationObject
 from kube_hound.smells import Smell
 
 
-class KubesecIntegrationAnalysis(StaticAnalysis):
+class UnnecessaryPrivilegesToPods(StaticAnalysis):
     analysis_id = 'kubesec_io'
     analysis_name = 'KubeSec analysis'
     analysis_description = 'integration with KubeSec.io analysis tool'

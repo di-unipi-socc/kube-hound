@@ -8,7 +8,7 @@ from kubernetes import client
 from kube_hound.smells import Smell
 
 
-class ExternalIpAnalysis(DynamicAnalysis):
+class ExposedServicesWithExternalIp(DynamicAnalysis):
     analysis_id = 'external_ip'
     analysis_name = 'Exernal-IP analysis'
     analysis_description = 'detect exposed services by analysing the External-IP field for services'

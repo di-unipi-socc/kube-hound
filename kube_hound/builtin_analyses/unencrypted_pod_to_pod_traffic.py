@@ -19,7 +19,7 @@ MAX_RESULTS_SHOWN = 10
 TRAFFIC_MONITORING_TIME = 30  # seconds
 
 
-class TrafficAnalysis(DynamicAnalysis):
+class UnencryptedPodToPodTraffic(DynamicAnalysis):
     analysis_id = 'pod_to_pod_traffic'
     analysis_name = 'Traffic analysis'
     analysis_description = 'inspect traffic to detect plaintext requests between services'
@@ -52,7 +52,7 @@ class TrafficAnalysis(DynamicAnalysis):
                     capture, http2=False)
                 if len(http_packets) > 0:
                     smell_description = f"Unencrypted traffic detected in pod {pod_name}\n" +\
-                        f"here is a sample of the packets (HTTP):\n" +\
+                        "here is a sample of the packets (HTTP):\n" +\
                         '\n'.join(http_packets)
                     out_smells.append(AnalysisResult(
                         smell_description, {Smell.NSC}))
@@ -66,7 +66,7 @@ class TrafficAnalysis(DynamicAnalysis):
                     capture, http2=True)
                 if len(http2_packets) > 0:
                     smell_description = f"Unencrypted traffic detected in pod {pod_name}\n" +\
-                        f"here is a sample of the packets (HTTP2, maybe gRPC?):\n" +\
+                        "here is a sample of the packets (HTTP2, maybe gRPC?):\n" +\
                         '\n'.join(http2_packets)
                     out_smells.append(AnalysisResult(
                         smell_description, {Smell.NSC}))
