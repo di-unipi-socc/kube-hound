@@ -1,0 +1,14 @@
+repositories:
+  main:
+    src: .
+
+deployment: {}
+
+services:
+  - name: gateway-multiple-auth
+    repository: main
+    openapi: gateway_multiple_auth.yaml
+
+properties:
+  gateway-multiple-auth:
+    external: true

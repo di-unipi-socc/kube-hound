@@ -1,0 +1,86 @@
+openapi: 3.0.0
+info:
+  title: Gateway service API
+  description: API specification of application's gateway
+  version: 0.1.0
+
+servers:
+  - url: http://gateway/
+
+paths:
+  /echo1:
+    post:
+      summary: Echo 1 endpoint
+      description: simply returns back the input
+      security:
+        - externalAPIKey: []
+      responses:
+        "200":
+          description: Return the echoed input
+          content:
+            text/plain:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /echo2:
+    post:
+      summary: Echo 2 endpoint
+      description: simply returns back the input
+      security:
+        - externalAPIKey: []
+      responses:
+        "200":
+          description: Return the echoed input
+          content:
+            text/plain:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /login:
+    post:
+      summary: Login endpoint
+      description: returns the access token
+      security:
+        - basicAuth: []
+      responses:
+        "200":
+          description: Return the access token
+          content:
+            text/plain:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /authenticate:
+    post:
+      summary: Athenticate
+      description: Authenticate to the application
+      security:
+        - basicAuth: []
+      responses:
+        "200":
+          description: Return the access token
+          content:
+            text/plain:
+              schema:
+                type: string
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+components:
+  responses:
+    UnauthorizedError:
+      description: User not authorized
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  securitySchemes:
+    externalAPIKey:
+      type: http
+      scheme: bearer
+    basicAuth:
+      type: http
+      scheme: basic

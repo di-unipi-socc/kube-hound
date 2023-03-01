@@ -20,3 +20,7 @@ services:
   - name: echo-basic-auth
     repository: main
     openapi: echo_basic_auth.yaml
+
+properties:
+  echo-no-security:
+    external: true

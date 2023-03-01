@@ -4,8 +4,8 @@
 
 ## Analysis highlights
 
-
 ### Unnecessary privileges to microservices
+
 Kube-hound detected various Kubernetes configurations that did not specify resources limits or minimum provileges.
 
 For example the `queue-master` do not have dropped capabilities, does not run as non privileged and does not have read-only root filesystem.
@@ -39,24 +39,24 @@ KubeSec analysis - detected smells {UPM}
 
 Similar results were found for the other services.
 
-### OpenAPI securityScheme analysis
+### OpenAPI Insufficient Access Control Analysis
 
 Sock Shop internal services' API do not specify any kind of security scheme.
 
 ```
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in carts.json
 
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in catalogue.json
 
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in orders.json
 
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in payment.json
 
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in user.json
 ```
 

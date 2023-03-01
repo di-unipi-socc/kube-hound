@@ -430,19 +430,19 @@ KubeSec analysis - detected smells {UPM}
 	selector: containers[] .securityContext .runAsUser -gt 10000
 	reason: Run as a high-UID user to avoid conflicts with the host's user table
 
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in carts.json
 
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in catalogue.json
 
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in orders.json
 
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in payment.json
 
-SecurityScheme analysis - detected smells {IAC}
+Insufficient Access Control in OpenAPI Analysis - detected smells {IAC, CA}
 	SecurityScheme not specified in user.json
 
 Secrets in environment variables analysis - detected smells {HS}
