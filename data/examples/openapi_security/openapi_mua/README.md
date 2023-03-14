@@ -6,7 +6,7 @@
 ## Tool output
 
 ```
-$ ./data/examples/openapi_iac/run.sh
+$ ./data/examples/openapi_security/openapi_iac/run.sh
 
 Analysis results:
 Multiple User Authentication in OpenAPI Analysis - detected smells {MUA}

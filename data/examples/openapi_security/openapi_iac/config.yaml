@@ -17,10 +17,6 @@ services:
     repository: main
     openapi: echo_security_override.yaml
 
-  - name: echo-basic-auth
-    repository: main
-    openapi: echo_basic_auth.yaml
-
 properties:
   echo-no-security:
     external: true
