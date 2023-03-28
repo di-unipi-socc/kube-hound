@@ -12,55 +12,55 @@ services:
     image: emailservice
     repository: main
     dockerfile: src/emailservice/Dockerfile
-    sourcecode: src
+    sourcecode: src/emailservice
 
   - name: productcatalogservice
     image: productcatalogservice
     repository: main
     dockerfile: src/productcatalogservice/Dockerfile
-    sourcecode: src
+    sourcecode: src/productcatalogservice
 
   - name: recommendationservice
     image: recommendationservice
     repository: main
     dockerfile: src/recommendationservice/Dockerfile
-    sourcecode: src
+    sourcecode: src/recommendationservice
 
   - name: shippingservice
     image: shippingservice
     repository: main
     dockerfile: src/shippingservice/Dockerfile
-    sourcecode: src
+    sourcecode: src/shippingservice
 
   - name: checkoutservice
     image: checkoutservice
     repository: main
     dockerfile: src/checkoutservice/Dockerfile
-    sourcecode: src
+    sourcecode: src/checkoutservice
 
   - name: paymentservice
     image: paymentservice
     repository: main
     dockerfile: src/paymentservice/Dockerfile
-    sourcecode: src
+    sourcecode: src/paymentservice
 
   - name: currencyservice
     image: currencyservice
     repository: main
     dockerfile: src/currencyservice/Dockerfile
-    sourcecode: src
+    sourcecode: src/currencyservice
 
   - name: cartservice
     image: cartservice
     repository: main
     dockerfile: src/cartservice/src/Dockerfile
-    sourcecode: src
+    sourcecode: src/cartservice
 
   - name: frontend
     image: frontend
     repository: main
     dockerfile: src/frontend/Dockerfile
-    sourcecode: src
+    sourcecode: src/frontend
 
   - name: frontend-external
     repository: main
@@ -70,7 +70,7 @@ services:
     image: adservice
     repository: main
     dockerfile: src/adservice/Dockerfile
-    sourcecode: src
+    sourcecode: src/adservice
 
 properties:
   frontend-external:

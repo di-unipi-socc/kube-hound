@@ -140,6 +140,7 @@ class Hound:
         # deduplication of sourcecodes ---- Still needs to be worked on
         seen_sourcodes = set()
         for spec in sourcecodes:
+            if spec.path not in seen_sourcodes:
                 seen_sourcodes.add(spec.path)
                 application_objects.append(spec)
 
