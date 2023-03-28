@@ -6,6 +6,7 @@ from kube_hound.applicationobject import ApplicationObject
 from kube_hound.frontend.config import ApplicationConfig
 from kube_hound.frontend.parsers.docker import DockerfileParser
 from kube_hound.frontend.parsers.kubernetes import KubernetesConfigParser
+from kube_hound.frontend.parsers.sourcecode import SourcecodeParser
 from loguru import logger
 from kube_hound.frontend.parsers.openapi import OpenAPIParser
 from kube_hound.service import Service
@@ -74,6 +75,7 @@ class Hound:
         # parse services' dockerfiles and openapis
         dockerfiles: List[ApplicationObject] = []
         openapis: List[ApplicationObject] = []
+        sourcecodes: List[ApplicationObject] = []
         for service_data in config_services:
             # TODO validation
             service_repository = self.repositories[service_data['repository']]
@@ -98,6 +100,21 @@ class Hound:
                 if len(dockerfile_objects) > 0:
                     service.dockerfile = dockerfile_objects[0]
 
+            if 'sourcecode' in service_data:
+                sourcecode_path = service_data['sourcecode']
+                sourcecode_parser = SourcecodeParser(
+                    service_repository, sourcecode_path)
+                sourcecode_objects = sourcecode_parser.parse()
+
+                for obj in sourcecode_objects:
+                    if service.properties is not None:
+                        obj.service_properties = dict(service.properties)
+                    logger.debug(obj)
+                    sourcecodes.append(obj)
+
+                if len(sourcecode_objects) > 0:
+                    service.dockerfile = sourcecode_objects[0]
+
             if 'openapi' in service_data:
                 openapi_path = service_data['openapi']
                 openapi_parser = OpenAPIParser(
@@ -118,6 +135,12 @@ class Hound:
         for spec in dockerfiles:
             if spec.path not in seen_openapis:
                 seen_openapis.add(spec.path)
+                application_objects.append(spec)
+
+        # deduplication of sourcecodes ---- Still needs to be worked on
+        seen_sourcodes = set()
+        for spec in sourcecodes:
+                seen_sourcodes.add(spec.path)
                 application_objects.append(spec)
 
         # deduplication of openapi specifications
