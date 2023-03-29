@@ -66,9 +66,10 @@ class ApplicationConfig():
             service_name = service['repository']
             service_origin = repositories[service_name]
             service_origin_path = service_origin['git']
+            sourcecode_yaml_path = service['sourcecode']
+            sourcecode_rel_path = sourcecode_yaml_path[4:]          #remove src/ ---could be done better---
 
-
-            sourcecode_path = os.path.join(service_origin_path, service['sourcecode'])
+            sourcecode_path = os.path.join(service_origin_path, sourcecode_rel_path)
             logger.info(sourcecode_path)
 
         #version 1
@@ -77,16 +78,6 @@ class ApplicationConfig():
         #    repository_description = repositories[repository_name]
         #    sourcecode_path = os.path.join(repository_description, service['sourcecode'])
         #    logger.info(sourcecode_path)
-
-        ##version 0
-        #for service_name in repositories:
-         #   repository_description = repositories[repository_name]
-          #  if 'repository' in repository_description and 'sourcecode' in repository_description:
-           #     repo_path = os.path.join(repository_description['repository'], repository_description['sourcecode'])
-            # repositry+path
-
-               # logger.info(repo_path)
-
         return out_repositories
 
     def services(self):
