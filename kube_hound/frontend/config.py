@@ -63,14 +63,13 @@ class ApplicationConfig():
 
 
         for service in self.config_object['services']:
-            service_name = service['repository']
-            service_origin = repositories[service_name]
-            service_origin_path = service_origin['git']
-            sourcecode_yaml_path = service['sourcecode']
-            sourcecode_rel_path = sourcecode_yaml_path[4:]          #remove src/ ---could be done better---
+            if 'sourcecode' in service:
+                service_name = service['repository']
+                service_origin = repositories[service_name]
+                service_origin_path = service_origin['git']      #remove src/ ---could be done better---
 
-            sourcecode_path = os.path.join(service_origin_path, sourcecode_rel_path)
-            logger.info(sourcecode_path)
+                sourcecode_path = os.path.join(service_origin_path, service['sourcecode'])
+                logger.info(sourcecode_path)
 
         #version 1
         #for service in self.config_object['services']:
