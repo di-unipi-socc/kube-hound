@@ -28,6 +28,11 @@ class ApplicationConfig():
             raise KeyError(
                 "The repositories key not found in the config object")
 
+        if 'services' in self.config_object:
+            for service in self.config_object['services']:
+                if 'sourcecode' not in service:
+                    logger.warning(f"No 'sourcecode' key found in service {service['name']}")
+
         if not self.context.exists():
             logger.warning(
                 f'the specified context does not exists, creating the directory {self.context}')
@@ -38,6 +43,7 @@ class ApplicationConfig():
 
         out_repositories: Dict[str, Repository] = {}
         repositories = self.config_object['repositories']
+        logger.info(repositories)
         for repository_name in repositories:
             repository_description = repositories[repository_name]
 
@@ -54,6 +60,33 @@ class ApplicationConfig():
                 out_repositories[repository_name] = local_repo
 
         logger.info('finished application acquisition')
+
+
+        for service in self.config_object['services']:
+            service_name = service['repository']
+            service_origin = repositories[service_name]
+            service_origin_path = service_origin['git']
+
+
+            sourcecode_path = os.path.join(service_origin_path, service['sourcecode'])
+            logger.info(sourcecode_path)
+
+        #version 1
+        #for service in self.config_object['services']:
+        #    repository_name = service['repository']
+        #    repository_description = repositories[repository_name]
+        #    sourcecode_path = os.path.join(repository_description, service['sourcecode'])
+        #    logger.info(sourcecode_path)
+
+        ##version 0
+        #for service_name in repositories:
+         #   repository_description = repositories[repository_name]
+          #  if 'repository' in repository_description and 'sourcecode' in repository_description:
+           #     repo_path = os.path.join(repository_description['repository'], repository_description['sourcecode'])
+            # repositry+path
+
+               # logger.info(repo_path)
+
         return out_repositories
 
     def services(self):
