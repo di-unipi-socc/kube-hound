@@ -37,6 +37,7 @@ class Hound:
         self.config = ApplicationConfig(self.context_path)
         self.config.load_config_from_file(self.config_path)
         self.repositories = self.config.acquire_application()
+        self.sourcecodes = self.config.acquire_sourcodes()
 
     def parse_application(self):
         logger.info('parsing the application...')

@@ -42,6 +42,7 @@ class ApplicationConfig():
             raise ValueError('The context must be a directory')
 
         out_repositories: Dict[str, Repository] = {}
+        source_out_repositories: Dict[str, Repository] = {}         #dal sourcode
         repositories = self.config_object['repositories']
         logger.info(repositories)
         for repository_name in repositories:
@@ -60,24 +61,36 @@ class ApplicationConfig():
                 out_repositories[repository_name] = local_repo
 
         logger.info('finished application acquisition')
+        return out_repositories
+
+    #Creates a Dict that contains the paths of the local directories of the sourcodes
+    def acquire_sourcodes(self) -> Dict[str, Repository]:
+        logger.info('acquiring the sourcecode paths...')
+        if 'services' in self.config_object:
+            for service in self.config_object['services']:
+                if 'sourcecode' not in service:
+                    logger.warning(f"No 'sourcecode' key found in service {service['name']}")
+        if not self.context.is_dir():
+            raise ValueError('The context must be a directory')
+
+        source_out_repositories: Dict[str, Repository] = {}
+        repositories = self.config_object['repositories']
+        logger.info(repositories)
 
 
         for service in self.config_object['services']:
             if 'sourcecode' in service:
-                service_name = service['repository']
-                service_origin = repositories[service_name]
-                service_origin_path = service_origin['git']      #remove src/ ---could be done better---
+                sourcecode_rel_path = service['sourcecode']
+                service_name = service['name']
 
-                sourcecode_path = os.path.join(service_origin_path, service['sourcecode'])
-                logger.info(sourcecode_path)
+                prefix = self.context
+                #Create path by joining self.contect to the relative path specified in the config.yaml
+                sourcecode_path= os.path.join(prefix,sourcecode_rel_path)
+                source_out_repositories[service_name] = sourcecode_path
+                logger.info(source_out_repositories[service_name])
+        logger.info('sourcecode loaded')
 
-        #version 1
-        #for service in self.config_object['services']:
-        #    repository_name = service['repository']
-        #    repository_description = repositories[repository_name]
-        #    sourcecode_path = os.path.join(repository_description, service['sourcecode'])
-        #    logger.info(sourcecode_path)
-        return out_repositories
+        return source_out_repositories
 
     def services(self):
         """
