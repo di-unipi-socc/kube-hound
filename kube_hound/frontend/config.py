@@ -64,7 +64,7 @@ class ApplicationConfig():
         return out_repositories
 
     #Creates a Dict that contains the paths of the local directories of the sourcodes
-    def acquire_sourcodes(self) -> Dict[str, Repository]:
+    def acquire_sourcecodes(self) -> Dict[str, Repository]:
         logger.info('acquiring the sourcecode paths...')
         if 'services' in self.config_object:
             for service in self.config_object['services']:
@@ -85,7 +85,7 @@ class ApplicationConfig():
 
                 prefix = self.context
                 #Create path by joining self.contect to the relative path specified in the config.yaml
-                sourcecode_path= os.path.join(prefix,sourcecode_rel_path)
+                sourcecode_path = os.path.join(prefix,sourcecode_rel_path)
                 source_out_repositories[service_name] = sourcecode_path
                 logger.info(source_out_repositories[service_name])
         logger.info('sourcecode loaded')
