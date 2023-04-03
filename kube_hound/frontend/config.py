@@ -84,13 +84,14 @@ class ApplicationConfig():
                 service_name = service['name']
 
                 prefix = self.context
-                #Create path by joining self.contect to the relative path specified in the config.yaml
+                #create path by joining self.context to the relative path specified in the config.yaml
                 sourcecode_path = os.path.join(prefix,sourcecode_rel_path)
                 source_out_repositories[service_name] = sourcecode_path
                 logger.info(source_out_repositories[service_name])
         logger.info('sourcecode loaded')
 
         return source_out_repositories
+
 
     def services(self):
         """
