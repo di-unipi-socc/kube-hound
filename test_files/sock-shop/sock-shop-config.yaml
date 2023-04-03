@@ -35,6 +35,7 @@ services:
     repository: catalogue
     dockerfile: docker/catalogue/Dockerfile
     openapi: api-spec/catalogue.json
+    sourcecode: docker/catalogue
 
   - name: catalogue-db
     image: weaveworksdemos/catalogue-db:0.3.0

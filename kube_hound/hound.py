@@ -13,7 +13,6 @@ from kube_hound.service import Service
 from kubernetes import config
 import json
 
-
 class Hound:
     def __init__(self, context_path: Path) -> None:
         self.context_path = context_path
@@ -102,11 +101,13 @@ class Hound:
                     service.dockerfile = dockerfile_objects[0]
 
             if 'sourcecode' in service_data:
-                sourcecode_path = service_data['sourcecode']
-                sourcecode_parser = SourcecodeParser(
-                    service_repository, sourcecode_path)
-                sourcecode_objects = sourcecode_parser.parse()
+                service_name = service_data['name']
+                local_path = Path(self.sourcecodes[service_name])
+                logger.info(local_path)
 
+                sourcecode_parser = SourcecodeParser(service_repository, local_path, service_name)
+
+                sourcecode_objects = sourcecode_parser.parse()
                 for obj in sourcecode_objects:
                     if service.properties is not None:
                         obj.service_properties = dict(service.properties)

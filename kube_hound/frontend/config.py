@@ -42,7 +42,6 @@ class ApplicationConfig():
             raise ValueError('The context must be a directory')
 
         out_repositories: Dict[str, Repository] = {}
-        source_out_repositories: Dict[str, Repository] = {}         #dal sourcode
         repositories = self.config_object['repositories']
         logger.info(repositories)
         for repository_name in repositories:
@@ -82,10 +81,10 @@ class ApplicationConfig():
             if 'sourcecode' in service:
                 sourcecode_rel_path = service['sourcecode']
                 service_name = service['name']
-
                 prefix = self.context
+
                 #create path by joining self.context to the relative path specified in the config.yaml
-                sourcecode_path = os.path.join(prefix,sourcecode_rel_path)
+                sourcecode_path = os.path.join(prefix, sourcecode_rel_path)
                 source_out_repositories[service_name] = sourcecode_path
                 logger.info(source_out_repositories[service_name])
         logger.info('sourcecode loaded')

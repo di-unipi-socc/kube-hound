@@ -5,6 +5,7 @@ from kube_hound.frontend.repositories import Repository
 from typing import List
 
 
+
 class SourcecodeParser(ApplicationParser):
     """
     The SourcecodeParser class provides a parser that turns
@@ -13,8 +14,9 @@ class SourcecodeParser(ApplicationParser):
     All ApplicationObject generated have type "sourcecode"
     """
 
-    def __init__(self, context: Repository, path: Path):
+    def __init__(self, context: Repository,path: Path, name: str ):
         self.context = context
+        self.name = name
         self.context_path = context.get_local_path()
         self.path: Path = path
 
@@ -22,7 +24,8 @@ class SourcecodeParser(ApplicationParser):
         """Parse the sourcecode into an ApplicationObject"""
         sourcecode_path = (
             self.context_path/self.path).resolve().absolute()
-        if not sourcecode_path.exists():
-            return []
+        name = self.name
+        path = self.path
 
-        return [ApplicationObject('sourcecode', sourcecode_path, data={})]
+
+        return [ApplicationObject('sourcecode', path, name)]
