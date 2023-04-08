@@ -5,12 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="96b56ebb-7e1b-4910-b435-9ab090ce2f67" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/kube_hound/builtin_analyses/cryptographic_primitives_usage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kube_hound/frontend/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/kube_hound/frontend/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kube_hound/frontend/parsers/sourcecode.py" beforeDir="false" afterPath="$PROJECT_DIR$/kube_hound/frontend/parsers/sourcecode.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kube_hound/hound.py" beforeDir="false" afterPath="$PROJECT_DIR$/kube_hound/hound.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_files/sock-shop/sock-shop-config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/test_files/sock-shop/sock-shop-config.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

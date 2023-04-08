@@ -72,7 +72,7 @@ class Hound:
                 for obj in kubernetes_objects:
                     application_objects.append(obj)
 
-        # parse services' dockerfiles and openapis
+        # parse services' dockerfiles, openapis and sourcecodes
         dockerfiles: List[ApplicationObject] = []
         openapis: List[ApplicationObject] = []
         sourcecodes: List[ApplicationObject] = []

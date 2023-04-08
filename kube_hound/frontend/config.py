@@ -51,8 +51,12 @@ class ApplicationConfig():
                 git_url = repository_description['git']
                 git_repo = GitRemoteRepository(git_url)
                 git_repo.acquire(self.context)
+                logger.info(git_repo.local_path)
+
                 git_repo.name = repository_name
+                logger.info(git_repo.name)
                 out_repositories[repository_name] = git_repo
+
             elif 'src' in repository_description:
                 src_path = self.context / Path(repository_description['src'])
                 local_repo = LocalFolderRefRepository(str(src_path))
@@ -78,12 +82,14 @@ class ApplicationConfig():
 
 
         for service in self.config_object['services']:
+
             if 'sourcecode' in service:
                 sourcecode_rel_path = service['sourcecode']
                 service_name = service['name']
                 prefix = self.context
 
-                #create path by joining self.context to the relative path specified in the config.yaml
+        #create path by joining self.context to the relative path specified in the config.yaml
+
                 sourcecode_path = os.path.join(prefix, sourcecode_rel_path)
                 source_out_repositories[service_name] = sourcecode_path
                 logger.info(source_out_repositories[service_name])

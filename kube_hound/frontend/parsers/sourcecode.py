@@ -21,9 +21,7 @@ class SourcecodeParser(ApplicationParser):
         self.path: Path = path
 
     def parse(self) -> List[ApplicationObject]:
-        """Parse the sourcecode into an ApplicationObject"""
-        sourcecode_path = (
-            self.context_path/self.path).resolve().absolute()
+
         name = self.name
         path = self.path
 
