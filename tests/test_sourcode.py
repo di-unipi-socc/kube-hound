@@ -1,10 +1,7 @@
 import pytest
 import os
 from pathlib import Path
-import yaml
 from kube_hound.frontend.config import ApplicationConfig
-from kube_hound.hound import Hound
-from loguru import logger
 
 def print_directory_tree(path, indent=''):
     """Recursively print the contents of a directory in a tree-like structure."""
