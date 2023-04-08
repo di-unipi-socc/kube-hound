@@ -9,9 +9,11 @@ def print_directory_tree(path, indent=''):
     for item in contents:
         item_path = os.path.join(path, item)
         if os.path.isfile(item_path):
-            print(indent + '- ' + item)  # Print file name
+            # Print file name
+            print(indent + '- ' + item)
         elif os.path.isdir(item_path):
-            print(indent + '+ ' + item)  # Print directory name
+            # Print directory name
+            print(indent + '+ ' + item)
             print_directory_tree(item_path, indent + '  ')  # Recursively print contents of subdirectory
 
 
@@ -35,3 +37,11 @@ def test_sourcecode_path():
     for keys in sourcecode_dir:
         print_directory_tree(sourcecode_dir[keys])
 
+        for file_name in os.listdir(sourcecode_dir[keys]):
+            if os.path.isfile(os.path.join(sourcecode_dir[keys], file_name)):
+                with open(os.path.join(sourcecode_dir[keys], file_name), "r") as file:
+                    file_contents = file.read()
+                    print("File:", file_name)
+                    print("Source Code:")
+                    print(file_contents)
+                    print("-----")
