@@ -59,8 +59,7 @@ class HardcodedSecretsInKubernetes(StaticAnalysis):
                         str(code_block[0]) + ' |' + code_block[1]
                     )
                 
-                description = f'Detected hardcoded kubernetes secret' +\
-                    f'Description: {fail_found_desc}\n' +\
+                description = f'Description: {fail_found_desc}\n' +\
                     f'File: ' + fail.file_path + ':' + str(fail.file_line_range[0]) + '-' + str(fail.file_line_range[1]) + '\n' +\
                     f'Error(s):\n' +\
                     f'\n'.join('-- ' + block for block in blocks)
