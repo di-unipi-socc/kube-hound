@@ -8,7 +8,6 @@ class Smell(Enum):
     OCC = auto()
     NEDE = auto()
     HS = auto()
-    HKS = auto()
     NSC = auto()
     UT = auto()
     MUA = auto()

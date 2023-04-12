@@ -1,12 +1,13 @@
 from typing import List, Mapping
 from loguru import logger
+import logging
 
 from kube_hound.analysis import AnalysisResult, StaticAnalysis
 from kube_hound.applicationobject import ApplicationObject
 from kube_hound.smells import Smell
 
 from checkov.runner_filter import RunnerFilter
-from checkov.secrets.runner import Runner
+from checkov.secrets.runner import Runner as SecretRunner
 
 
 class HardcodedSecretsInKubernetes(StaticAnalysis):
@@ -17,6 +18,8 @@ class HardcodedSecretsInKubernetes(StaticAnalysis):
 
     def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
             -> List[AnalysisResult]:
+
+        logging.getLogger().setLevel(logging.NOTSET)
 
         kubernetes_objects = input_objects.get('kubernetes_config')
         if kubernetes_objects is None:
@@ -31,8 +34,8 @@ class HardcodedSecretsInKubernetes(StaticAnalysis):
         return results
 
     def __check_kubernetes_secret(self, secret: ApplicationObject) -> List[AnalysisResult]:
-        report = Runner().run(
-            root_folder=None, files=[str(secret.path)], runner_filter=RunnerFilter(framework=['secrets'])
+        report = SecretRunner().run(
+            root_folder = None, files = [str(secret.path)]
         )
 
         secret_fail_response = []
@@ -63,7 +66,7 @@ class HardcodedSecretsInKubernetes(StaticAnalysis):
                     f'\n'.join('-- ' + block for block in blocks)
                 
                 secret_fail_response.append(
-                    AnalysisResult(description, {Smell.HKS})
+                    AnalysisResult(description, {Smell.HS})
                 )
         
         return secret_fail_response
