@@ -5,7 +5,7 @@ description = "Automatic smell detection and scanning for Kubernetes clusters"
 authors = ["gio54321 <g.dellimmagine@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.11"
 PyYAML = "^6.0"
 types-PyYAML = "^6.0.11"
 GitPython = "^3.1.27"
