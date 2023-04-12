@@ -19,7 +19,7 @@ class HardcodedSecretsInKubernetes(StaticAnalysis):
     def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
             -> List[AnalysisResult]:
 
-        logging.getLogger().setLevel(logging.NOTSET)
+        # logging.getLogger().setLevel(logging.CRITICAL) # Not showing checkov logger
 
         kubernetes_objects = input_objects.get('kubernetes_config')
         if kubernetes_objects is None:
@@ -35,7 +35,7 @@ class HardcodedSecretsInKubernetes(StaticAnalysis):
 
     def __check_kubernetes_secret(self, secret: ApplicationObject) -> List[AnalysisResult]:
         report = SecretRunner().run(
-            root_folder = None, files = [str(secret.path)]
+            root_folder=None, files=[str(secret.path)], runner_filter=RunnerFilter(show_progress_bar=False)
         )
 
         secret_fail_response = []
