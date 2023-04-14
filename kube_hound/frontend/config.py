@@ -85,6 +85,8 @@ class ApplicationConfig():
 
             if 'sourcecode' in service:
                 sourcecode_rel_path = service['sourcecode']
+                if sourcecode_rel_path == None:
+                    sourcecode_rel_path = ''
                 repo_name = service['repository']
                 local_repo = local_repos[repo_name]
                 service_name = service['name']

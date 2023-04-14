@@ -28,30 +28,35 @@ services:
     repository: main
     dockerfile: src/echo/Dockerfile
     openapi: src/echo/echo.yaml
+    sourcecode:
 
   - name: echo2
     image: gio54321/echo
     repository: main
     dockerfile: src/echo/Dockerfile
     openapi: src/echo/echo.yaml
+    sourcecode:
 
   - name: echo3
     image: gio54321/echo
     repository: main
     dockerfile: src/echo/Dockerfile
     openapi: src/echo/echo.yaml
+    sourcecode:
 
   - name: echo4
     image: gio54321/echo
     repository: main
     dockerfile: src/echo/Dockerfile
     openapi: src/echo/echo.yaml
+    sourcecode:
 
   - name: echo5
     image: gio54321/echo
     repository: main
     dockerfile: src/echo/Dockerfile
     openapi: src/echo/echo.yaml
+    sourcecode:
 
 # claimed properties
 properties:
