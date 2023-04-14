@@ -13,5 +13,6 @@ class Smell(Enum):
     MUA = auto()
     CA = auto()
 
+
     def __repr__(self) -> str:
         return self.name
