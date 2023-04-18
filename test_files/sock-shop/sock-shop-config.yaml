@@ -35,7 +35,7 @@ services:
     repository: catalogue
     dockerfile: docker/catalogue/Dockerfile
     openapi: api-spec/catalogue.json
-    sourcecode:
+    sourcecode: '.'
 
   - name: catalogue-db
     image: weaveworksdemos/catalogue-db:0.3.0
@@ -53,39 +53,39 @@ services:
     repository: orders
     dockerfile: docker/orders/Dockerfile
     openapi: api-spec/orders.json
-    sourcecode:
+    sourcecode: '.'
 
   - name: payment
     image: weaveworksdemos/payment:0.4.3
     repository: payment
     dockerfile: docker/payment/Dockerfile
     openapi: api-spec/payment.json
-    sourcecode:
+    sourcecode: '.'
 
   - name: queue-master
     image: weaveworksdemos/queue-master:0.3.1
     repository: queue-master
     dockerfile: Dockerfile
-    sourcecode:
+    sourcecode: '.'
 
   - name: shipping
     image: weaveworksdemos/shipping:0.4.8
     repository: shipping
     dockerfile: docker/shipping/Dockerfile
-    sourcecode:
+    sourcecode: '.'
 
   - name: user
     image: weaveworksdemos/user:0.4.7
     repository: user
     dockerfile: Dockerfile
     openapi: apispec/user.json
-    sourcecode:
+    sourcecode: '.'
 
   - name: user-db
     image: weaveworksdemos/user-db:0.3.0
     repository: user
     dockerfile: docker/user-db/Dockerfile
-    sourcecode:
+    sourcecode: '.'
 
 properties:
   front-end:

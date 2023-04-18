@@ -7,7 +7,7 @@ def print_directory_tree(path, indent=''):
     """Recursively print the contents of a directory in a tree-like structure."""
     contents = os.listdir(path)
     for item in contents:
-        item_path = os.path.join(path, item)
+        item_path = Path(path)/ Path(item)
         if os.path.isfile(item_path):
             # Print file name
             print(indent + '- ' + item)
@@ -26,8 +26,8 @@ def test_sourcecode_path():
     # context = os.path.dirname(os.getcwd())
     context = os.getcwd()
     #build path strings for necessary to build ApplicationObject
-    path_string = os.path.join(context, 'test_files/online-boutique/application')
-    conf_path_string = os.path.join(context, 'test_files/online-boutique/online-boutique-config.yaml')
+    path_string = Path(context)/Path('test_files/online-boutique/application')
+    conf_path_string = Path(context)/Path('test_files/online-boutique/online-boutique-config.yaml')
 
 
     context_path = Path(path_string).resolve().absolute()
@@ -42,11 +42,11 @@ def test_sourcecode_path():
         print_directory_tree(sourcecode_dir[keys])
 
         for file_name in os.listdir(sourcecode_dir[keys]):
-            if os.path.isfile(os.path.join(sourcecode_dir[keys], file_name)):
+            if os.path.isfile(Path(sourcecode_dir[keys])/Path( file_name)):
                 if any(file_name.endswith(file_type) for file_type in skip_file_types):
                     # Skip files with specified extensions
                     continue
-                with open(os.path.join(sourcecode_dir[keys], file_name), "r") as file:
+                with open(Path(sourcecode_dir[keys])/Path(file_name), "r") as file:
                     file_contents = file.read()
                     print("File:", file_name)
                     print("Source Code:")
@@ -59,8 +59,8 @@ def test_sourcecode_path():
     context = os.getcwd()
 
     #build path strings for necessary to build ApplicationObject
-    path_string = os.path.join(context, 'test_files/sock-shop/application')
-    conf_path_string = os.path.join(context, 'test_files/sock-shop/sock-shop-config.yaml')
+    path_string = Path(context)/Path('test_files/sock-shop/application')
+    conf_path_string = Path(context)/Path('test_files/sock-shop/sock-shop-config.yaml')
     context_path = Path(path_string)
     configpath= Path(conf_path_string)
     config = ApplicationConfig(context_path)
@@ -73,11 +73,11 @@ def test_sourcecode_path():
         print_directory_tree(sourcecode_dir[keys])
 
         for file_name in os.listdir(sourcecode_dir[keys]):
-            if os.path.isfile(os.path.join(sourcecode_dir[keys], file_name)):
+            if os.path.isfile(Path(sourcecode_dir[keys])/Path(file_name)):
                 if any(file_name.endswith(file_type) for file_type in skip_file_types):
                     # Skip files with specified extensions
                     continue
-                with open(os.path.join(sourcecode_dir[keys], file_name), "r") as file:
+                with open(Path(sourcecode_dir[keys])/Path(file_name), "r") as file:
                     file_contents = file.read()
                     print("File:", file_name)
                     print("Source Code:")
@@ -90,8 +90,8 @@ def test_sourcecode_path():
     #context = os.path.dirname(os.getcwd())
     context = os.getcwd()
     # build path strings for necessary to build ApplicationObject
-    path_string = os.path.join(context, 'test_files/mock-application/application')
-    conf_path_string = os.path.join(context, 'test_files/mock-application/mock-config.yaml')
+    path_string = Path(context)/ Path('test_files/mock-application/application')
+    conf_path_string = Path(context)/Path('test_files/mock-application/mock-config.yaml')
     context_path = Path(path_string)
     configpath = Path(conf_path_string)
     config = ApplicationConfig(context_path)
@@ -104,11 +104,11 @@ def test_sourcecode_path():
         print_directory_tree(sourcecode_dir[keys])
 
         for file_name in os.listdir(sourcecode_dir[keys]):
-          if os.path.isfile(os.path.join(sourcecode_dir[keys], file_name)):
+          if os.path.isfile(Path(sourcecode_dir[keys])/Path(file_name)):
                 if any(file_name.endswith(file_type) for file_type in skip_file_types):
                     # Skip files with specified extensions
                     continue
-                with open(os.path.join(sourcecode_dir[keys], file_name), "r") as file:
+                with open(Path(sourcecode_dir[keys]/Path(file_name), "r") as file:
                     file_contents = file.read()
                     print("File:", file_name)
                     print("Source Code:")

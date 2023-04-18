@@ -85,8 +85,7 @@ class ApplicationConfig():
 
             if 'sourcecode' in service:
                 sourcecode_rel_path = service['sourcecode']
-                if sourcecode_rel_path == None:
-                    sourcecode_rel_path = ''
+
                 repo_name = service['repository']
                 local_repo = local_repos[repo_name]
                 service_name = service['name']
@@ -96,7 +95,7 @@ class ApplicationConfig():
 
         #create path by joining self.context to the relative path specified in the config.yaml
 
-                sourcecode_path = os.path.join(local_path, sourcecode_rel_path)
+                sourcecode_path = (Path(local_path)/ Path(sourcecode_rel_path))
                 source_out_repositories[service_name] = sourcecode_path
                 logger.info(source_out_repositories[service_name])
         logger.info('sourcecode loaded')
