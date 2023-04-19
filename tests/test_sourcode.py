@@ -23,7 +23,6 @@ def test_sourcecode_path():
 
     """Check online-boutique."""
     #get parent directory
-    # context = os.path.dirname(os.getcwd())
     context = os.getcwd()
     #build path strings for necessary to build ApplicationObject
     path_string = Path(context)/Path('test_files/online-boutique/application')
@@ -52,10 +51,10 @@ def test_sourcecode_path():
                     print("Source Code:")
                     print(file_contents)
                     print("-----")
+        assert(os.path.isdir(sourcecode_dir[keys]))
 
     """Check sock-shop."""
     #get parent directory
-    #context = os.path.dirname(os.getcwd())
     context = os.getcwd()
 
     #build path strings for necessary to build ApplicationObject
@@ -83,11 +82,12 @@ def test_sourcecode_path():
                     print("Source Code:")
                     print(file_contents)
                     print("-----")
+        assert(os.path.isdir(sourcecode_dir[keys]))
 
     """Check mock-app. Excecute after cloning the mock-application files locally"""
 
-    """# get parent directory
-    #context = os.path.dirname(os.getcwd())
+    """
+    # get parent directory
     context = os.getcwd()
     # build path strings for necessary to build ApplicationObject
     path_string = Path(context)/ Path('test_files/mock-application/application')
@@ -108,9 +108,10 @@ def test_sourcecode_path():
                 if any(file_name.endswith(file_type) for file_type in skip_file_types):
                     # Skip files with specified extensions
                     continue
-                with open(Path(sourcecode_dir[keys]/Path(file_name), "r") as file:
+                with open(Path(sourcecode_dir[keys])/Path(file_name), "r") as file:
                     file_contents = file.read()
                     print("File:", file_name)
                     print("Source Code:")
                     print(file_contents)
-                    print("-----")"""
+                    print("-----")
+        assert(os.path.isdir(sourcecode_dir[keys]))  """
