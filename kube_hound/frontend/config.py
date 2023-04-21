@@ -28,6 +28,11 @@ class ApplicationConfig():
             raise KeyError(
                 "The repositories key not found in the config object")
 
+        if 'services' in self.config_object:
+            for service in self.config_object['services']:
+                if 'sourcecode' not in service:
+                    logger.warning(f"No 'sourcecode' key found in service {service['name']}")
+
         if not self.context.exists():
             logger.warning(
                 f'the specified context does not exists, creating the directory {self.context}')
@@ -38,6 +43,7 @@ class ApplicationConfig():
 
         out_repositories: Dict[str, Repository] = {}
         repositories = self.config_object['repositories']
+        logger.info(repositories)
         for repository_name in repositories:
             repository_description = repositories[repository_name]
 
@@ -45,8 +51,12 @@ class ApplicationConfig():
                 git_url = repository_description['git']
                 git_repo = GitRemoteRepository(git_url)
                 git_repo.acquire(self.context)
+                logger.info(git_repo.local_path)
+
                 git_repo.name = repository_name
+                logger.info(git_repo.name)
                 out_repositories[repository_name] = git_repo
+
             elif 'src' in repository_description:
                 src_path = self.context / Path(repository_description['src'])
                 local_repo = LocalFolderRefRepository(str(src_path))
@@ -55,6 +65,43 @@ class ApplicationConfig():
 
         logger.info('finished application acquisition')
         return out_repositories
+
+    #Creates a Dict that contains the paths of the local directories of the sourcodes
+    def acquire_sourcecodes(self, local_repos: Dict[str, Repository]) -> Dict[str, Repository]:
+        logger.info('acquiring the sourcecode paths...')
+        if 'services' in self.config_object:
+            for service in self.config_object['services']:
+                if 'sourcecode' not in service:
+                    logger.warning(f"No 'sourcecode' key found in service {service['name']}")
+        if not self.context.is_dir():
+            raise ValueError('The context must be a directory')
+
+        source_out_repositories: Dict[str, Repository] = {}
+        repositories = self.config_object['repositories']
+        logger.info(repositories)
+
+
+        for service in self.config_object['services']:
+
+            if 'sourcecode' in service:
+                sourcecode_rel_path = service['sourcecode']
+
+                repo_name = service['repository']
+                local_repo = local_repos[repo_name]
+                service_name = service['name']
+                local_path = local_repo.get_local_path()
+
+               # prefix = self.context
+
+        #create path by joining self.context to the relative path specified in the config.yaml
+
+                sourcecode_path = (Path(local_path)/ Path(sourcecode_rel_path))
+                source_out_repositories[service_name] = sourcecode_path
+                logger.info(source_out_repositories[service_name])
+        logger.info('sourcecode loaded')
+
+        return source_out_repositories
+
 
     def services(self):
         """
