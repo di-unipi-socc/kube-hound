@@ -1,0 +1,8 @@
+FROM python:3.9-alpine
+WORKDIR /app
+
+RUN python -m pip install --extra-index-url https://username:password@my.pypi.com/pypi privatestuff
+COPY "myapp.py" .
+
+ENTRYPOINT ["python"]
+CMD ["myapp.py"]
