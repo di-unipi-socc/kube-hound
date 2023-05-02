@@ -6,6 +6,6 @@ deployment: {}
 
 services: 
   - name: main
-    dockerfile: dockerfile1
+    dockerfile: docker_secret_commandline
     repository: main
-    sourcecode: 'temp.py'
+    sourcecode: '.'

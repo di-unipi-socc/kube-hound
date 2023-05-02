@@ -1,3 +1,6 @@
+import os
+import pathlib
+
 from typing import List, Mapping
 from loguru import logger
 import logging
@@ -33,18 +36,30 @@ class HardcodedSecretsInDockerAndSource(StaticAnalysis):
                 results.extend(self.__iterate_input(docker_objects))
             
             if source_objects is not None:
-                logger.info('Supported file extensions for source code: ' + ' '.join(SOURCE_CODE_EXTENSION))
+                logger.info('Hardcoded secret - supported file extensions for source code: ' + ' '.join(SOURCE_CODE_EXTENSION))
                 results.extend(self.__iterate_input(source_objects))
         
         return results
 
     def __iterate_input(self, input_list: List[ApplicationObject]) -> List[AnalysisResult]:
         results = []
-        for input_file in input_list:
-            results.extend(self.__check_secrets(input_file))
+        for input_obj in input_list:
+            if input_obj.type == 'sourcecode' and os.path.isdir(input_obj.path):
+                files = self.__get_folder_files(input_obj.path)
+                input_list.extend(files)
+
+            results.extend(self.__check_secrets(input_obj))
             
         return results
     
+    def __get_folder_files(self, folder_path: str) -> List[ApplicationObject]:
+        files = []
+        for file in pathlib.Path(folder_path).rglob("*"):
+            if file.is_file():
+                files.append(ApplicationObject('sourcecode', file, None))
+        
+        return files
+
     def __check_secrets(self, input_file: ApplicationObject) -> List[AnalysisResult]:
         report = SecretRunner().run(
             root_folder=None, files=[str(input_file.path)], runner_filter=RunnerFilter(show_progress_bar=False)
