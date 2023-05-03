@@ -13,7 +13,6 @@ from checkov.runner_filter import RunnerFilter
 from checkov.secrets.runner import Runner as SecretRunner
 from checkov.secrets.runner import SOURCE_CODE_EXTENSION
 
-
 class HardcodedSecretsInDockerAndSource(StaticAnalysis):
     analysis_id = 'docker_source_secrets'
     analysis_name = 'Hardcoded docker and source secrets analysis'
@@ -45,16 +44,16 @@ class HardcodedSecretsInDockerAndSource(StaticAnalysis):
         results = []
         for input_obj in input_list:
             if input_obj.type == 'sourcecode' and os.path.isdir(input_obj.path):
-                files = self.__get_folder_files(input_obj.path)
+                files = self.__get_source_files(input_obj.path)
                 input_list.extend(files)
 
             results.extend(self.__check_secrets(input_obj))
             
         return results
     
-    def __get_folder_files(self, folder_path: str) -> List[ApplicationObject]:
+    def __get_source_files(self, folder_path: str) -> List[ApplicationObject]:
         files = []
-        for file in pathlib.Path(folder_path).rglob("*"):
+        for file in pathlib.Path(folder_path).rglob("*.*"):
             if file.is_file():
                 files.append(ApplicationObject('sourcecode', file, None))
         
