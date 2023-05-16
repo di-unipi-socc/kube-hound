@@ -7,6 +7,7 @@ from kube_hound.builtin_analyses.insufficient_access_control_openapi import Insu
 from kube_hound.builtin_analyses.hardcoded_secrets_environment import HardcodedSecretsInEnvironment
 from kube_hound.builtin_analyses.unencrypted_pod_to_pod_traffic import UnencryptedPodToPodTraffic
 from kube_hound.builtin_analyses.hardcoded_unencrypted_kubernetes_secrets import HardcodedSecretsInKubernetes
+from kube_hound.builtin_analyses.usage_of_cryptographic_primitives import UsageOfCryptographicPrimitives
 
 all_analyses: List[Type[Analysis]] = [
     ExposedServicesWithExternalIp,
@@ -15,5 +16,6 @@ all_analyses: List[Type[Analysis]] = [
     MultipleUserAuthenticationOpenAPI,
     HardcodedSecretsInEnvironment,
     UnencryptedPodToPodTraffic,
+    UsageOfCryptographicPrimitives,
     HardcodedSecretsInKubernetes,
 ]
