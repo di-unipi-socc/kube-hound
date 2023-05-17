@@ -189,8 +189,20 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             else:
                 print("Failed to retrieve issues.")
 
-            # Optionally, you can check the response content for more details
-            print(response.content)
+            # Get the path to the directory containing the Dockerfile
+            dockerfile_dir = Path.cwd()/'sonar-scanner-dotnet'
+
+
+            print(dockerfile_dir)
+
+
+            # Stop the container
+            sonarscanner_container.stop()
+
+            # Remove the container
+            sonarscanner_container.remove()
+
+
 
             # Stop the container
             sonarqube_container.stop()
@@ -198,11 +210,6 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             # Remove the container
             sonarqube_container.remove()
 
-            # Stop the container
-            sonarscanner_container.stop()
-
-            # Remove the container
-            sonarscanner_container.remove()
             return output_results
         except requests.exceptions.RequestException as e:
             print("Error triggering analysis:", e)
