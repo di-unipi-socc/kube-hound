@@ -82,6 +82,9 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             sonar.auth.check_credentials()
 
 
+
+
+
             # Set the request payload with the required parameters
             payload = {
                 "name": project_name,
@@ -94,9 +97,13 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
             # Check the response status code
             if response.status_code == 200:
-                print("Project created successfully.")
+                logger.debug("Sonarqube project created successfully.")
             else:
-                print("Failed to create the project.")
+                logger.warning("Sonarqube project creation failed.")
+
+
+
+
 
             # Set the request payload with the required parameters
             payload = {
@@ -111,16 +118,19 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             if response.status_code == 200:
                 data = response.json()
                 token = str(data['token'])
-                print('Authentication token:', token)
             else:
-                print('Failed to create the authentication token.')
+                logger.warning('Failed to create the authentication token.')
+
+
+
+
+
 
             # Inspect the container
             container_info = self.docker_client.api.inspect_container(sonarqube_container.id)
 
             # Get the IP address from the container's network settings
             ip_address = container_info['NetworkSettings']['IPAddress']
-            print(ip_address)
             access_address = 'http://'+str(ip_address)+':9000'
 
 
@@ -156,7 +166,6 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             }
 
 
-
             # Send the authenticated API request
             response = requests.get(api_endpoint_search, params=params, auth=auth)
 
@@ -167,16 +176,9 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
                 if issues:
                     for issue in issues:
-                        issue_key = issue["key"]
                         component = issue["component"]
-                        rule_key = issue["rule"]
                         message = issue["message"]
                         line = issue["line"]
-                        print(f"Issue Key: {issue_key}")
-                        print(f"Component: {component}")
-                        print(f"Rule Key: {rule_key}")
-                        print(f"Message: {message}")
-                        print(f"Line: {line}\n")
                         component = os.path.basename(component)
                         description = f"Sonarqube found potential problems in {component}\n" + \
                                       f"line: {line}\n" + \
@@ -185,23 +187,19 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
                         output_results.append(
                             AnalysisResult(description, {Smell.UCP}))
                 else:
-                    print("No issues found for the specified rule keys.")
+                    logger.info("No instances of usage of cryptographic primitves")
             else:
-                print("Failed to retrieve issues.")
-
-            # Get the path to the directory containing the Dockerfile
-            dockerfile_dir = Path.cwd()/'sonar-scanner-dotnet'
+                logger.warning("Failed to retrieve issues.")
 
 
-            print(dockerfile_dir)
 
 
             # Stop the container
+
             sonarscanner_container.stop()
 
             # Remove the container
             sonarscanner_container.remove()
-
 
 
             # Stop the container
@@ -212,7 +210,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
             return output_results
         except requests.exceptions.RequestException as e:
-            print("Error triggering analysis:", e)
+            logger.warning("Error triggering analysis:", e)
 
         return []
 
