@@ -27,7 +27,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
         sourcecode_objects = input_objects['sourcecode']
 
 
-        # build volume for sonarqube analysis
+        # build volume for sonarqube analysis (directories to be analyzed)
         paths = [str(sourcecode.path) for sourcecode in sourcecode_objects]
         volumes = {}
         for path in paths:
@@ -52,23 +52,23 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
         project_visibility = "public"
         auth = ("admin", "admin")
 
-        #vaious enpoints that are needed
-        api_endpoint_create = f"{url}/api/projects/create"      #to create project
+        #various api enpoints that are needed
+        api_endpoint_create = f"{url}/api/projects/create"                  #to create project
         api_endpoint_create_token = f"{url}/api/user_tokens/generate"       #to generate user token
-        api_endpoint_search = f"{url}/api/issues/search"
+        api_endpoint_search = f"{url}/api/issues/search"                    #to search through issue key
+
         sonar = SonarQubeClient(sonarqube_url=url, username=username, password=password)
 
         # spawn a sonarqube container
-        logger.debug('spawning sonarqube container')
+        logger.debug('Spawning sonarqube container')
         sonarqube_container = self.docker_client.containers.run(
             'sonarqube', detach=True, ports={'9000/tcp': 9000}, volumes={host_properties_path: {'bind': container_properties_path, 'mode': 'ro'}})
-
 
 
         try:
             self.wait_for_running_container(sonarqube_container)
             logger.debug("Sonarqube container is now running")
-
+            logger.debug("Creating sonarqube server...")
             while True:
                 container_logs = self.docker_client.containers.get(str(sonarqube_container.id)).logs().decode("utf-8")
                 if "SonarQube is operational" in container_logs:
@@ -136,7 +136,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
 
             # spawn a sonarscanner container
-            logger.debug('spawning sonarscanner container')
+            logger.debug('Spawning sonarscanner container...')
             sonarscanner_container = self.docker_client.containers.run(
                 'sonarsource/sonar-scanner-cli',
                 detach=True,
@@ -155,7 +155,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
                 sleep(1)  # Wait for 1 second before checking again
 
-            sleep(10)
+            sleep(5) #needs to wait a few seconds for the ruslts to actually be registered
 
             rule_keys = ["python:S5542", "php:S5542", "javascript:S5542", "kotlin:S5542", "java:S5542", "typescript:S5542"]
 
