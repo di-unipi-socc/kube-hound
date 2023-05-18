@@ -6,6 +6,6 @@ deployment: {}
 
 services: 
   - name: main
-    dockerfile: docker_secret_commandline
+    dockerfile: Dockerfile.command-secret
     repository: main
-    sourcecode: '.'
+    sourcecode: 'src/'
