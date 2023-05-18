@@ -32,7 +32,7 @@ class HardcodedSecretsInDockerAndSource(StaticAnalysis):
                 results.extend(self.__iterate_input(docker_object))
 
             if source_object is not None:
-                logger.info('Hardcoded secret - supported file extensions for source code: ' + ' '.join(SOURCE_CODE_EXTENSION))
+                logger.info('Supported file extensions for source code: ' + ' '.join(SOURCE_CODE_EXTENSION))
                 results.extend(self.__iterate_input(source_object))
 
         return results
