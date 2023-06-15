@@ -10,6 +10,8 @@ Currently it is supported the detection for:
 - Hardcoded Secrets in Environment Variables
 - Publicly Accessible Services using the External-IP field
 - Unencrypted Pod-to-Pod Traffic
+- Hardcoded secrets in Kubernetes 
+- Hardcoded secrets in Docker and Source code 
 
 The folder `data/examples` contains various examples of analyses on different sample applications.
 
