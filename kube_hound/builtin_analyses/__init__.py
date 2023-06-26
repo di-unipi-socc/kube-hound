@@ -18,4 +18,5 @@ all_analyses: List[Type[Analysis]] = [
     UnencryptedPodToPodTraffic,
     HardcodedSecretsInKubernetes,
     HardcodedSecretsInDockerAndSource,
+    DBMSDataAtRestEncryption,
 ]
