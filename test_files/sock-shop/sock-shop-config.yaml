@@ -22,6 +22,9 @@ deployment:
   kubernetes:
     repository: main
     glob: deploy/kubernetes/manifests/*.yaml
+  terraform:
+    repository: main
+    glob: deploy/kubernetes/terraform/*.tf
 
 services:
   - name: carts
