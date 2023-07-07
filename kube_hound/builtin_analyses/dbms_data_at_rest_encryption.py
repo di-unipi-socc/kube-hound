@@ -58,7 +58,7 @@ class DBMSDataAtRestEncryption(StaticAnalysis):
                         f'File: {fail.file_path}:{str(fail.file_line_range[0])}-{str(fail.file_line_range[1])}'
 
                     secret_fail_response.append(
-                        AnalysisResult(description, {Smell.DTDE})
+                        AnalysisResult(description, {Smell.NEDE})
                     )
 
         return secret_fail_response
