@@ -8,6 +8,7 @@ from kube_hound.builtin_analyses.hardcoded_secrets_environment import HardcodedS
 from kube_hound.builtin_analyses.unencrypted_pod_to_pod_traffic import UnencryptedPodToPodTraffic
 from kube_hound.builtin_analyses.hardcoded_unencrypted_kubernetes_secrets import HardcodedSecretsInKubernetes
 from kube_hound.builtin_analyses.hardcoded_docker_source_secrets import HardcodedSecretsInDockerAndSource
+from kube_hound.builtin_analyses.dbms_data_at_rest_encryption import DBMSDataAtRestEncryption
 
 all_analyses: List[Type[Analysis]] = [
     ExposedServicesWithExternalIp,
@@ -18,4 +19,5 @@ all_analyses: List[Type[Analysis]] = [
     UnencryptedPodToPodTraffic,
     HardcodedSecretsInKubernetes,
     HardcodedSecretsInDockerAndSource,
+    DBMSDataAtRestEncryption,
 ]

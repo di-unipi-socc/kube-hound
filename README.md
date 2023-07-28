@@ -12,6 +12,7 @@ Currently it is supported the detection for:
 - Unencrypted Pod-to-Pod Traffic
 - Hardcoded secrets in Kubernetes 
 - Hardcoded secrets in Docker and Source code 
+- Data-at-Rest Encryption Not Enabled in DBMSs
 
 The folder `data/examples` contains various examples of analyses on different sample applications.
 

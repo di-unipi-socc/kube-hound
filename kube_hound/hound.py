@@ -7,8 +7,9 @@ from kube_hound.frontend.config import ApplicationConfig
 from kube_hound.frontend.parsers.docker import DockerfileParser
 from kube_hound.frontend.parsers.kubernetes import KubernetesConfigParser
 from kube_hound.frontend.parsers.sourcecode import SourcecodeParser
-from loguru import logger
+from kube_hound.frontend.parsers.terraform import TerraformParser
 from kube_hound.frontend.parsers.openapi import OpenAPIParser
+from loguru import logger
 from kube_hound.service import Service
 from kubernetes import config
 import json
@@ -57,19 +58,37 @@ class Hound:
         for service, properties in self.config.properties():
             self.services[service].properties = properties
 
-        # parse kubernetes config files
-        if 'kubernetes' in deployment:
-            kubernetes_config = deployment['kubernetes']
-            repository = self.repositories[kubernetes_config['repository']]
-            files = repository.get_artifacts_by_regex(
-                kubernetes_config['glob'])
-            for f in files:
-                kubernetes_parser = KubernetesConfigParser(
-                    repository, f, self.services)
-                kubernetes_objects = kubernetes_parser.parse()
+        # parse kubernetes and terraform
+        for keys in deployment:
+            match keys:
+                case 'kubernetes':
+                    config = deployment['kubernetes']
+                
+                case 'terraform':
+                    config = deployment['terraform']
 
-                # append all the objects in the application objects list
-                for obj in kubernetes_objects:
+                case _:
+                    logger.info('Deployment {keys} not found')
+                    continue
+            
+            repository = self.repositories[config['repository']]
+            files = repository.get_artifacts_by_regex(config['glob'])
+            for f in files:
+                match keys:
+                    case 'kubernetes':
+                        kubernetes_parser = KubernetesConfigParser(
+                            repository, f, self.services)
+                        objects = kubernetes_parser.parse()
+                
+                    case 'terraform':
+                        terraform_parser = TerraformParser(
+                            repository, f, self.services)
+                        objects = terraform_parser.parse()
+
+                    case _:
+                        continue
+            
+                for obj in objects:
                     application_objects.append(obj)
 
         # parse services' dockerfiles, openapis and sourcecodes
