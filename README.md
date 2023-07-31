@@ -21,7 +21,7 @@ The folder `data/examples` contains various examples of analyses on different sa
 ### Command line interface
 
 ```sh
-poetry run python -m kube_hound
+./kube-hound
 ```
 
 ```text
@@ -106,3 +106,25 @@ To run Kube-hound on those application run:
 ./scripts/run_online_boutique.sh
 ./scripts/run_sock_shop.sh
 ```
+
+## Docker management
+When you want to add a new service to the `docker-compose.yml` you have to follow this procedure to make the application work properly:
+  - add the section of the environments where they will be specified:
+    - type of analisys: if it is static or dynamic or both (if both specify both options separated by a comma without spaces)
+    - in which analysis: specify the id of the analysis where the container is used (as in type if there are multiple analyzes separate them with commas without  adding spaces) 
+  - example:
+    ```yaml
+      version: '3'
+      services:
+        app:
+          ...
+  
+        kubesec:
+          image: ...
+          ...
+          ...
+          environment:
+            - TYPE=static,dynamic
+            - ANALISYS=analisys_id
+    ```
+  - for better parsing `TYPE` and `ANALISYS` put them in uppercase (as in the example)
