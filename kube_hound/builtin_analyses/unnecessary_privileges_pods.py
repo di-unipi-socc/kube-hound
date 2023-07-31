@@ -23,34 +23,20 @@ class UnnecessaryPrivilegesToPods(StaticAnalysis):
         if kubernetes_objects is None:
             return []
 
-        # retrieve the docker client
-        self.docker_client = docker.from_env()
-
-        # spawn a kubesec container
-        logger.debug('spawning kubesec container')
-        kubesec_container = self.docker_client.containers.run(
-            'kubesec/kubesec:v2', detach=True, ports={'8080/tcp': 8080})
-
         output_results = []
-        try:
-            self.wait_for_running_container(kubesec_container)
 
-            # for each different Kubernetes config, send it to Kubesec
-            # and join the results
-            seen_paths = set()
-            for obj in kubernetes_objects:
-                if str(obj.path) in seen_paths:
-                    continue
-                seen_paths.add(str(obj.path))
+        # for each different Kubernetes config, send it to Kubesec
+        # and join the results
+        seen_paths = set()
+        for obj in kubernetes_objects:
+            if str(obj.path) in seen_paths:
+                continue
+            seen_paths.add(str(obj.path))
 
-                logger.debug(f"processing kubernetes config {obj.path.name}")
+            logger.debug(f"processing kubernetes config {obj.path.name}")
 
-                results = self.__process_kubernetes_config(obj)
-                output_results += results
-        finally:
-            # cleanup Kubesec container
-            kubesec_container.stop()
-            kubesec_container.remove()
+            results = self.__process_kubernetes_config(obj)
+            output_results += results
 
         return output_results
 
@@ -65,7 +51,7 @@ class UnnecessaryPrivilegesToPods(StaticAnalysis):
 
         # send the content to kubesec
         response = requests.post(
-            'http://localhost:8080/scan', data=raw_data)
+            'http://kubesec/scan', data=raw_data)
 
         # parse the results
         data = json.loads(response.text)
