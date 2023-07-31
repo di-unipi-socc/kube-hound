@@ -110,7 +110,7 @@ To run Kube-hound on those application run:
 ## Docker management
 When you want to add a new service to the `docker-compose.yml` you have to follow this procedure to make the application work properly:
   - add the section of the environments where they will be specified:
-    - type of analisys: if it is static or dynamic or both (if both specify both options separated by a comma without spaces)
+    - type of analisys: if the analysis where the container is used is static or dynamic or both (if both specify both options separated by a comma without spaces, case where the container is used in multiple analyses). 
     - in which analysis: specify the id of the analysis where the container is used (as in type if there are multiple analyzes separate them with commas without  adding spaces) 
   - example:
     ```yaml
