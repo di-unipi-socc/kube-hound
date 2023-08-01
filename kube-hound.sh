@@ -44,20 +44,15 @@ parse_yaml() {
    }'
 }
 
-# Funzione per verificare se una stringa è una sottostringa di un altro elemento dell'array
-function is_substring() {
-  local str="$1"
-  local response=false
-  shift
-  
-  for element in "$@"; do
-    if [[ "$element" != "$str" && "$element" == *"$str"* ]]; then
-      response=true
+# Rimuovere eventuali duplicati di servizi in comune
+remove_duplicates() {
+  local unique_elements=()
+  for element in "${@}"; do
+    if [[ ! " ${unique_elements[*]} " =~ " $element " ]]; then
+      unique_elements+=("$element")
     fi
   done
-  
-  # echo "$element - $str - $response"
-  echo "$response"
+  echo "${unique_elements[@]}"
 }
 
 # Funzione per estrarre le variabili dall'environment di un servizio
@@ -128,7 +123,11 @@ for service in "${services[@]}"; do
       elif [[ "$var" =~ ^ANALISYS=[[:alnum:][:punct:]]+$ ]]; then
         IFS=',' read -r -a analisys_id <<< "$values"
         for id in "${analisys_id[@]}"; do
-          all_services["$id"]="$service"
+          if [[ ${all_services[$id]+_} ]]; then
+            all_services["$id"]="${all_services["${id}"]},$service"
+          else
+            all_services["$id"]="$service"
+          fi
         done
       fi
     done
@@ -142,23 +141,34 @@ while getopts sdl: opt; do
     case "$opt" in
         l|d|s) 
             if [[ $statement_count -eq 1 ]]; then
-                exit 1
+              exit 1
             fi
             statement_count=$((count + 1))
 
             if [[ $opt == "s" ]]; then
-                for single in "${static_services[@]}"; do
-                  statement="$statement $single"
-                done
+              static_services=($(remove_duplicates "${static_services[@]}"))
+              for single in "${static_services[@]}"; do
+                statement="$statement $single"
+              done
             elif [[ $opt == "d" ]]; then
-                for single in "${dynamic_services[@]}"; do
-                  statement="$statement $single"
-                done
+              dynamic_services=($(remove_duplicates "${dynamic_services[@]}"))
+              for single in "${dynamic_services[@]}"; do
+                statement="$statement $single"
+              done
             elif [[ $opt == "l" ]]; then 
-                IFS=',' read -r -a analisys_list <<< "$OPTARG"
-                for analisys in "${analisys_list[@]}"; do
-                  statement="$statement ${all_services["${analisys}"]}"
+              declare -a to_start=()
+              IFS=',' read -r -a analisys_list <<< "$OPTARG"
+              for analisys in "${analisys_list[@]}"; do
+                IFS=',' read -r -a spec_services <<< "${all_services["${analisys}"]}"
+                for service in "${spec_services[@]}"; do
+                  to_start+=("$service") # facciamo questo passo aggiuntivo per evitare di inserire due volte lo stesso servizio
                 done
+              done
+
+              to_start=($(remove_duplicates "${to_start[@]}"))
+              for start in "${to_start[@]}"; do
+                statement="$statement $start"
+              done
             fi
 
             statement="$statement app"
