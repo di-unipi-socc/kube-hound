@@ -8,7 +8,7 @@ import os
 import requests
 import json
 import subprocess
-from sonarqube import SonarQubeClient
+#from sonarqube import SonarQubeClient
 
 
 from kube_hound.applicationobject import ApplicationObject
@@ -57,7 +57,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
         api_endpoint_create_token = f"{url}/api/user_tokens/generate"       #to generate user token
         api_endpoint_search = f"{url}/api/issues/search"                    #to search through issue key
 
-        sonar = SonarQubeClient(sonarqube_url=url, username=username, password=password)
+        #sonar = SonarQubeClient(sonarqube_url=url, username=username, password=password)
 
         # spawn a sonarqube container
         logger.debug('Spawning sonarqube container')
@@ -78,8 +78,8 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
             logger.debug("Server is now running")
 
-            sonar.auth.authenticate_user(login="admin", password="admin")
-            sonar.auth.check_credentials()
+            #sonar.auth.authenticate_user(login="admin", password="admin")
+            #sonar.auth.check_credentials()
 
 
 
