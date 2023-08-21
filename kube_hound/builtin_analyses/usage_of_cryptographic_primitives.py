@@ -103,6 +103,9 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
         return []
 
+
+
+
     def build_volume(self, input_objects):
         assert 'sourcecode' in input_objects
         sourcecode_objects = input_objects['sourcecode']
@@ -141,6 +144,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             logger.debug("Sonarqube project created successfully.")
         else:
             logger.warning("Sonarqube project creation failed.")
+
     def create_token(self, api_endpoint_create_token, auth):
         # Set the request payload with the required parameters
         payload = {
