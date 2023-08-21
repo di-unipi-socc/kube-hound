@@ -6,9 +6,6 @@ from loguru import logger
 import docker
 import os
 import requests
-import json
-import subprocess
-#from sonarqube import SonarQubeClient
 
 
 from kube_hound.applicationobject import ApplicationObject
@@ -29,8 +26,6 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             self.docker_client = docker.from_env()
 
             url = 'http://localhost:9000'
-            username = "admin"
-            password = "admin"
             host_properties_path = str(Path('./custom-sonar.properties').absolute())
             container_properties_path = '/opt/sonarqube/conf/custom.properties'
 
@@ -47,8 +42,6 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             api_endpoint_create_token = f"{url}/api/user_tokens/generate"  # to generate user token
             api_endpoint_search = f"{url}/api/issues/search"  # to search through issue key
 
-            # sonar = SonarQubeClient(sonarqube_url=url, username=username, password=password)
-
             sonarqube_container = self.spawn_sonarqube_container(host_properties_path, container_properties_path)
             try:
                 self.wait_for_running_container(sonarqube_container)
@@ -64,8 +57,6 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
                 logger.debug("Server is now running")
 
-                # sonar.auth.authenticate_user(login="admin", password="admin")
-                # sonar.auth.check_credentials()
 
                 self.create_sonarqube_project(project_name, project_key, project_visibility, api_endpoint_create, auth)
 
@@ -99,7 +90,6 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
                 logger.warning("Error triggering analysis:", e)
         finally:
             # Stop the container
-
             sonarscanner_container.stop()
 
             # Remove the container
