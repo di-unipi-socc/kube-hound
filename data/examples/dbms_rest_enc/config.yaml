@@ -1,0 +1,10 @@
+repositories:
+  main:
+    src: .
+
+deployment:
+  terraform:
+    repository: main
+    glob: "files/*.tf"
+
+services: []

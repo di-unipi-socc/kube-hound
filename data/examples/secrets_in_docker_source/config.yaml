@@ -1,0 +1,11 @@
+repositories:
+  main:
+    src: .
+
+deployment: {}
+
+services: 
+  - name: main
+    dockerfile: Dockerfile.command-secret
+    repository: main
+    sourcecode: 'src/'

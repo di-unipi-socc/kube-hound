@@ -14,6 +14,5 @@ class Smell(Enum):
     CA = auto()
     UCP = auto()
 
-
     def __repr__(self) -> str:
         return self.name

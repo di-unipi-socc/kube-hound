@@ -7,6 +7,8 @@ from kube_hound.builtin_analyses.insufficient_access_control_openapi import Insu
 from kube_hound.builtin_analyses.hardcoded_secrets_environment import HardcodedSecretsInEnvironment
 from kube_hound.builtin_analyses.unencrypted_pod_to_pod_traffic import UnencryptedPodToPodTraffic
 from kube_hound.builtin_analyses.hardcoded_unencrypted_kubernetes_secrets import HardcodedSecretsInKubernetes
+from kube_hound.builtin_analyses.hardcoded_docker_source_secrets import HardcodedSecretsInDockerAndSource
+from kube_hound.builtin_analyses.dbms_data_at_rest_encryption import DBMSDataAtRestEncryption
 from kube_hound.builtin_analyses.usage_of_cryptographic_primitives import UsageOfCryptographicPrimitives
 
 all_analyses: List[Type[Analysis]] = [
@@ -18,4 +20,6 @@ all_analyses: List[Type[Analysis]] = [
     UnencryptedPodToPodTraffic,
     UsageOfCryptographicPrimitives,
     HardcodedSecretsInKubernetes,
+    HardcodedSecretsInDockerAndSource,
+    DBMSDataAtRestEncryption,
 ]
