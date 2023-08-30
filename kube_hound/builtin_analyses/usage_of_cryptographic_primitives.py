@@ -78,7 +78,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
                     sleep(1)  # Wait for 1 second before checking again
 
-                sleep(5)  # needs to wait a few seconds for the ruslts to actually be registered
+                sleep(5)  # needs to wait a few seconds for the results to actually be registered
 
                 rule_keys = ["java:S2257", "python:S2257"]
 
@@ -188,9 +188,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
         # Check if the request was successful
         if response.status_code == 200:
             response_json = response.json()
-            logger.info(response_json)
             issues = response_json.get("hotspots", [])
-            logger.info(issues)
             filtered_hotspots = [hotspot for hotspot in issues if hotspot.get("ruleKey") in rule_keys]
 
             if filtered_hotspots:
