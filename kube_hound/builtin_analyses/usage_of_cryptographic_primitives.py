@@ -40,7 +40,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             # various api enpoints that are needed
             api_endpoint_create = f"{url}/api/projects/create"  # to create project
             api_endpoint_create_token = f"{url}/api/user_tokens/generate"  # to generate user token
-            api_endpoint_search = f"{url}/api/issues/search"  # to search through issue key
+            api_endpoint_search = f"{url}/api/hotspots/search"  # to search through issue key
 
             sonarqube_container = self.spawn_sonarqube_container(host_properties_path, container_properties_path)
             try:
@@ -80,8 +80,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
 
                 sleep(5)  # needs to wait a few seconds for the ruslts to actually be registered
 
-                rule_keys = ["python:S5542", "php:S5542", "javascript:S5542", "kotlin:S5542", "java:S5542",
-                             "typescript:S5542"]
+                rule_keys = ["java:S2257", "python:S2257"]
 
                 self.api_request(project_key, rule_keys, api_endpoint_search, auth, output_results)
 
@@ -181,7 +180,6 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
         # Parameters for the API request
         params = {
             "projectKey": project_key,
-            "rules": ",".join(rule_keys),
         }
 
         # Send the authenticated API request
@@ -190,10 +188,13 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
         # Check if the request was successful
         if response.status_code == 200:
             response_json = response.json()
-            issues = response_json.get("issues", [])
+            logger.info(response_json)
+            issues = response_json.get("hotspots", [])
+            logger.info(issues)
+            filtered_hotspots = [hotspot for hotspot in issues if hotspot.get("ruleKey") in rule_keys]
 
-            if issues:
-                for issue in issues:
+            if filtered_hotspots:
+                for issue in filtered_hotspots:
                     component = issue["component"]
                     message = issue["message"]
                     line = issue["line"]
