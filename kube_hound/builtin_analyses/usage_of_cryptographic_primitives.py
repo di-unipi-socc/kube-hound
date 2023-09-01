@@ -190,19 +190,19 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             response_json = response.json()
             issues = response_json.get("hotspots", [])
             filtered_hotspots = [hotspot for hotspot in issues if hotspot.get("ruleKey") in rule_keys]
-
+            logger.info(filtered_hotspots)
             if filtered_hotspots:
                 for issue in filtered_hotspots:
                     component = issue["component"]
                     message = issue["message"]
                     line = issue["line"]
                     component = os.path.basename(component)
-                    description = f"Sonarqube found potential problems in {component}\n" + \
+                    description = f"Sonarqube found potential problems in {component} at line {line}\n" + \
                                   f"line: {line}\n" + \
                                   f"reason: {message}"
 
                     output_results.append(
-                        AnalysisResult(description, {Smell.UCP}))
+                        AnalysisResult(description, {Smell.OCC}))
             else:
                 logger.info("No instances of usage of cryptographic primitves")
         else:
@@ -222,3 +222,4 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             container.reload()
             if container.status == 'running':
                 return
+
