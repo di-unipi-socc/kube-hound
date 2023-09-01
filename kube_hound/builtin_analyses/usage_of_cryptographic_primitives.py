@@ -196,9 +196,10 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
                     component = issue["component"]
                     message = issue["message"]
                     line = issue["line"]
-                    component = os.path.basename(component)
-                    description = f"Sonarqube found potential problems in {component} at line {line}\n" + \
-                                  f"line: {line}\n" + \
+                    file_name = os.path.basename(component)
+                    suspicious_code = self.serach_line(component, line)
+                    description = f"Sonarqube found potential problems in {file_name} at line {line}\n" + \
+                                  f">   {suspicious_code}" + \
                                   f"reason: {message}"
 
                     output_results.append(
@@ -223,3 +224,9 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
             if container.status == 'running':
                 return
 
+    def serach_line(self, file_name, num):
+        result_string = file_name.replace("my_project:", "/")
+        with open(result_string, 'r') as file:
+            for line_number, line in enumerate(file, start=1):
+                if line_number == num:
+                    return(line)
