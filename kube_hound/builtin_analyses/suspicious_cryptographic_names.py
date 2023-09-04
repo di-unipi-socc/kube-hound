@@ -9,6 +9,7 @@ import docker
 import os
 import requests
 import esprima
+from pycparser import c_parser
 import javalang
 
 from kube_hound.applicationobject import ApplicationObject
@@ -28,8 +29,13 @@ class SuspiciousCryptographicNames(StaticAnalysis):
         AES = "AES"
         IV = "IV"
         RSA = "RSA"
+
+        # Non suspicious names [user could add words in future]
+        not_suspicious = ["private", "positive", "negative"]
+
+        # User could specify what types of files to analyze
         #skip_file = [".md", ".txt", ".ini", ".conf", ".cfg", ".json", ".html", ".xml", ".pdf", ".log", ".csv", ".sh", ".bat", ".css", ".svg", ".dat", ".msg", ".sql", ".po", ".pot", ".proto", ".in"]
-        no_skip_file = [".py", ".java", ".go", ".javascript", ".go", ".cs"]
+        no_skip_file = [".py", ".java", ".go", ".javascript", ".cs"]
         output_results = []
 
         assert 'sourcecode' in input_objects
@@ -46,7 +52,7 @@ class SuspiciousCryptographicNames(StaticAnalysis):
                         # for python files analysis is working well
                         self.python_analysis(type_file, AES, IV, RSA, output_results)
                     elif type_file.is_file():
-                        self.base_analysis(type_file, AES, IV, RSA, output_results)
+                        self.base_analysis(type_file, AES, IV, RSA, not_suspicious, output_results)
                     else:
                         try:
                             if type_file.is_file():
@@ -57,7 +63,7 @@ class SuspiciousCryptographicNames(StaticAnalysis):
 
         return output_results
 
-    def base_analysis(self, type_file, AES, IV, RSA, output_results):
+    def base_analysis(self, type_file, AES, IV, RSA, not_suspicious, output_results):
         #split file in words
         with open(type_file, 'r') as file:
             file_content = file.read()
@@ -81,7 +87,7 @@ class SuspiciousCryptographicNames(StaticAnalysis):
         with open(type_file, 'r') as file:
             for line_number, line in enumerate(file, start=1):
                 for name in suspicious_names:
-                    if name in line:
+                    if name in line and name.lower() not in not_suspicious:
                         if warning_lines.get(name) is not None:
                             warning_lines[name].append(line_number)
                         else:
@@ -94,10 +100,11 @@ class SuspiciousCryptographicNames(StaticAnalysis):
             description = f"Potential usage of custom crypto code in {type_file.name}.\n" + \
                           f"lines: {warning_lines[key]}.\n" + \
                           f"reason: {message}"
-            output_results.append(AnalysisResult(description, {Smell.SCN}))
+            output_results.append(AnalysisResult(description, {Smell.OCC}))
 
 
     def python_analysis(self, type_file, AES, IV, RSA, output_results):
+        # ANALYSIS BASED ON ABSTRACT TREE CREATION OF THE PYTHON FILE
         with open(type_file, 'r') as file:
             # Read the content of the file
             file_content = file.read()
@@ -122,7 +129,7 @@ class SuspiciousCryptographicNames(StaticAnalysis):
 
             # find suspicious names
             for name in fun_var_names:
-                if AES.lower() not in name.lower() and IV.lower() not in name.lower() and RSA.lower() not in name.lower() and name in warning_lines:
+                if AES.lower() not in name.lower() and IV.lower() not in name.lower() and RSA.lower() not in name.lower() and name in warning_lines or name.lower() == "private":
                     warning_lines.pop(name)
             for key in warning_lines:
                 message = f"Suspicious name \"{key}\" found in the file, may indicate implementation of custom crypto code.\n" + \
@@ -130,9 +137,25 @@ class SuspiciousCryptographicNames(StaticAnalysis):
                 description = f"Potential usage of custom crypto code in {type_file.name}.\n" + \
                               f"lines: {warning_lines[key]}.\n" + \
                               f"reason: {message}"
-                output_results.append(AnalysisResult(description, {Smell.SCN}))
+                output_results.append(AnalysisResult(description, {Smell.OCC}))
+
+    def c_analysis(self, type_file, AES, IV, RSA, output_results):
+        # ANALYSIS BASED ON ABSTRACT TREE CREATION OF THE PYTHON FILE
+        logger.warning(f"opening:{type_file}")
+        with open(type_file, 'r') as file:
+
+            # Read the content of the file
+            file_content = file.read()
+            fun_var_names = []
+            warning_lines = {}
+            # Create a C parser
+            parser = c_parser.CParser()
+            # Parse the C code
+            ast = parser.parse(file_content)
+            logger.info(ast)
 
     def js_analysis(self, type_file, AES, IV, RSA):
+        # ANALYSIS BASED ON ABSTRACT TREE CREATION OF JAVASCRIPT FILE
         with (open(type_file, 'r') as file):
             # Read the content of the file
             fun_var_names = []

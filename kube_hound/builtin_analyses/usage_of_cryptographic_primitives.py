@@ -202,7 +202,7 @@ class UsageOfCryptographicPrimitives(StaticAnalysis):
                                   f"reason: {message}"
 
                     output_results.append(
-                        AnalysisResult(description, {Smell.UCP}))
+                        AnalysisResult(description, {Smell.OCC}))
             else:
                 logger.info("No instances of usage of cryptographic primitves")
         else:
