@@ -16,6 +16,7 @@ pyshark = "^0.5.3"
 nest-asyncio = "^1.5.6"
 checkov = "^2.3.160"
 pathlib = "^1.0.1"
+pycparser = "^2.21"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
