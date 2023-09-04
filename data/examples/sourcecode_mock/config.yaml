@@ -1,0 +1,18 @@
+repositories:
+  main:
+    src: './data/examples/sourcecode_mock'
+deployment: {}
+
+services:
+  - name: folder1
+    repository: main
+    sourcecode: '.'
+
+  - name: folder2
+    repository: main
+    sourcecode: 'folder2'
+
+  - name: net
+    repository: main
+    sourcecode: 'net'
+
