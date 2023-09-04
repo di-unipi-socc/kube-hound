@@ -2,18 +2,14 @@ from pathlib import Path
 import ast
 import re
 from typing import Dict, List, Mapping, Optional
-from time import sleep
 from kube_hound.analysis import AnalysisResult, StaticAnalysis
 from loguru import logger
-import docker
-import os
-import requests
 import esprima
-from pycparser import c_parser
 import javalang
 
 from kube_hound.applicationobject import ApplicationObject
 from kube_hound.smells import Smell
+
 
 
 class SuspiciousCryptographicNames(StaticAnalysis):
@@ -22,21 +18,26 @@ class SuspiciousCryptographicNames(StaticAnalysis):
     analysis_description = 'detect instances of suspicious cryptographic names inside the microservices sourcecode'
     input_types = ['sourcecode']
 
+    AES = "aes"
+    IV = "iv"
+    RSA = "rsa"
 
     def run_analysis(self, input_objects: Mapping[str, List[ApplicationObject]]) \
             -> List[AnalysisResult]:
 
-        AES = "AES"
-        IV = "IV"
-        RSA = "RSA"
+        AES = "aes"
+        IV = "iv"
+        RSA = "rsa"
+
 
         # Non suspicious names [user could add words in future]
         not_suspicious = ["private", "positive", "negative"]
 
-        # User could specify what types of files to analyze
-        #skip_file = [".md", ".txt", ".ini", ".conf", ".cfg", ".json", ".html", ".xml", ".pdf", ".log", ".csv", ".sh", ".bat", ".css", ".svg", ".dat", ".msg", ".sql", ".po", ".pot", ".proto", ".in"]
-        no_skip_file = [".py", ".java", ".go", ".javascript", ".cs"]
+        # User could specify what types of files to analyze/not analyze in future
+        skip_file = [".md", ".txt", ".ini", ".conf", ".cfg", ".json", ".html", ".xml", ".pdf", ".log", ".csv", ".sh", ".bat", ".css", ".svg", ".dat", ".msg", ".sql", ".po", ".pot", ".proto", ".in", ".sum"]
+        #no_skip_file = [".py", ".java", ".go", ".js", ".cs"]
         output_results = []
+        analyzed_files = []
 
         assert 'sourcecode' in input_objects
         sourcecode_objects = input_objects['sourcecode']
@@ -47,18 +48,24 @@ class SuspiciousCryptographicNames(StaticAnalysis):
         directories = [str(sourcecode.path) for sourcecode in sourcecode_objects]
         for directory in directories:
             for type_file in Path(directory).rglob('*'):
-                if type_file.is_file() and type_file.suffix in no_skip_file:
-                    if type_file.is_file() and type_file.suffix==".py":
-                        # for python files analysis is working well
-                        self.python_analysis(type_file, AES, IV, RSA, output_results)
-                    elif type_file.is_file():
-                        self.base_analysis(type_file, AES, IV, RSA, not_suspicious, output_results)
-                    else:
-                        try:
-                            if type_file.is_file():
-                                self.remaining_types_analysis(type_file, AES, IV, RSA, output_results)
-                        except Exception as e:
-                            print(f"Error parsing {type_file}: {e}")
+                if type_file not in analyzed_files:
+                    analyzed_files.append(type_file)
+                    if type_file.is_file() and type_file.suffix not in skip_file:
+                        if type_file.is_file() and type_file.suffix==".py":
+                            # for python files analysis is working well
+                            self.python_analysis(type_file, AES, IV, RSA, not_suspicious, output_results)
+                        if type_file.is_file() and type_file.suffix==".java":
+                            # for python files analysis is working well
+                            self.java_analysis(type_file, AES, IV, RSA, not_suspicious, output_results)
+                        if type_file.is_file() and type_file.suffix==".js":
+                            # for python files analysis is working well
+                            self.js_analysis(type_file, AES, IV, RSA, not_suspicious, output_results)
+                        else:
+                            try:
+                                if type_file.is_file():
+                                    self.base_analysis(type_file, AES, IV, RSA, not_suspicious, output_results)
+                            except Exception as e:
+                                print(f"Error parsing {type_file}: {e}")
         logger.debug(directories)
 
         return output_results
@@ -72,45 +79,27 @@ class SuspiciousCryptographicNames(StaticAnalysis):
             tokens = re.findall(r'\w+|[\w_]+', file_content)
             tokens = [token.strip() for token in tokens if token.strip()]
 
-            #check if words have suspicious keywords
+            # check if tokens contains any suspicious keywords
             for word in tokens:
-                if AES.lower() in word.lower():
+                if AES in word.lower():
                     if word not in suspicious_names:
                         suspicious_names.append(word)
-                if IV.lower() in word.lower():
+                if IV in word.lower():
                     if word not in suspicious_names:
                         suspicious_names.append(word)
-                if RSA.lower() in word.lower():
+                if RSA in word.lower():
                     if word not in suspicious_names:
                         suspicious_names.append(word)
-        #find line and build warning_lines dict
-        with open(type_file, 'r') as file:
-            for line_number, line in enumerate(file, start=1):
-                for name in suspicious_names:
-                    if name in line and name.lower() not in not_suspicious:
-                        if warning_lines.get(name) is not None:
-                            warning_lines[name].append(line_number)
-                        else:
-                            warning_lines[name] = [line_number]
-        logger.info(warning_lines)
 
-        for key in warning_lines:
-            message = f"Suspicious name \"{key}\" found in the file, may indicate implementation of custom crypto code.\n" + \
-                      "Check for custom code implementation."
-            description = f"Potential usage of custom crypto code in {type_file.name}.\n" + \
-                          f"lines: {warning_lines[key]}.\n" + \
-                          f"reason: {message}"
-            output_results.append(AnalysisResult(description, {Smell.OCC}))
+        self.find_issue(type_file, suspicious_names, not_suspicious, warning_lines, output_results)
 
-
-    def python_analysis(self, type_file, AES, IV, RSA, output_results):
+    def python_analysis(self, type_file, AES, IV, RSA, not_suspicious, output_results):
         # ANALYSIS BASED ON ABSTRACT TREE CREATION OF THE PYTHON FILE
         with open(type_file, 'r') as file:
             # Read the content of the file
             file_content = file.read()
             fun_var_names = []
             warning_lines = {}
-            message = ""
             tree = ast.parse(file_content)
 
             for node in ast.walk(tree):
@@ -129,39 +118,58 @@ class SuspiciousCryptographicNames(StaticAnalysis):
 
             # find suspicious names
             for name in fun_var_names:
-                if AES.lower() not in name.lower() and IV.lower() not in name.lower() and RSA.lower() not in name.lower() and name in warning_lines or name.lower() == "private":
+                if ((AES not in name.lower() and IV not in name.lower() and RSA not in name.lower()) or (name.lower() in not_suspicious)) and (name in warning_lines):
                     warning_lines.pop(name)
             for key in warning_lines:
-                message = f"Suspicious name \"{key}\" found in the file, may indicate implementation of custom crypto code.\n" + \
+                line_numbers = self.array_to_string(warning_lines[key])
+                message = f"Suspicious name found in the file, may indicate implementation of custom crypto code.\n" + \
                           "Check for custom code implementation."
-                description = f"Potential usage of custom crypto code in {type_file.name}.\n" + \
-                              f"lines: {warning_lines[key]}.\n" + \
+                description = f"Potential usage of custom crypto code in {type_file.name} at lines: {line_numbers}.\n" + \
+                              f">   {key}\n" + \
                               f"reason: {message}"
                 output_results.append(AnalysisResult(description, {Smell.OCC}))
 
-    def c_analysis(self, type_file, AES, IV, RSA, output_results):
-        # ANALYSIS BASED ON ABSTRACT TREE CREATION OF THE PYTHON FILE
-        logger.warning(f"opening:{type_file}")
+    def java_analysis(self, type_file, AES, IV, RSA, not_suspicious, output_results):
+        # ANALYSIS BASED ON ABSTRACT TREE CREATION OF THE JAVA FILE
         with open(type_file, 'r') as file:
 
             # Read the content of the file
             file_content = file.read()
-            fun_var_names = []
+            tokens = []
+            suspicious_names = []
             warning_lines = {}
-            # Create a C parser
-            parser = c_parser.CParser()
-            # Parse the C code
-            ast = parser.parse(file_content)
-            logger.info(ast)
+            # Create java ast tree and filter save node names only for function declarations and varaiable decations
+            tree = javalang.parse.parse(file_content)
+            for path, node in tree.filter(javalang.tree.MethodDeclaration):
+                if node.name not in tokens :
+                    tokens.append(node.name)
 
-    def js_analysis(self, type_file, AES, IV, RSA):
+            for path, node in tree.filter(javalang.tree.VariableDeclarator):
+                if node.name not in tokens:
+                    tokens.append(node.name)
+
+            # check if tokens contains any suspicious keywords
+            for word in tokens:
+                if AES in word.lower():
+                    if word not in suspicious_names:
+                        suspicious_names.append(word)
+                if IV in word.lower():
+                    if word not in suspicious_names:
+                        suspicious_names.append(word)
+                if RSA in word.lower():
+                    if word not in suspicious_names:
+                        suspicious_names.append(word)
+
+        self.find_issue(type_file, suspicious_names, not_suspicious, warning_lines, output_results)
+
+    def js_analysis(self, type_file, AES, IV, RSA, not_suspicious, output_results):
         # ANALYSIS BASED ON ABSTRACT TREE CREATION OF JAVASCRIPT FILE
         with (open(type_file, 'r') as file):
             # Read the content of the file
             fun_var_names = []
             warning_lines = {}
             file_content = file.read()
-            logger.info("Analyzing " + type_file.name)
+
             try:
                 parsed_code = esprima.parseScript(file_content, loc=True)
             except Exception as e:
@@ -179,14 +187,6 @@ class SuspiciousCryptographicNames(StaticAnalysis):
                         else:
                             warning_lines[node.id.name] = [node.id.loc.start.line]
 
-                    #elif node.type in ('ExpressionStatement') and node.expression.type == 'CallExpression':
-                    #    logger.info("found function call statement")
-                    #    fun_var_names.append(node.expression.callee.property.name)
-                    #    if warning_lines.get(node.expression.callee.property.name) is not None:
-                    #        warning_lines[node.expression.callee.property.name].append(node.expression.callee.property.loc.start.line)
-                    #    else:
-                    #        warning_lines[node.expression.callee.property.name] = [node.expression.callee.property.loc.start.line]
-
                     elif node.type in ('VariableDeclaration', 'VariableDeclarationStatement'):
                         # Extract variable names from VariableDeclaration nodes
                         for declaration in node.declarations:
@@ -198,9 +198,40 @@ class SuspiciousCryptographicNames(StaticAnalysis):
                                 else:
                                     warning_lines[declaration.id.name] = [declaration.id.loc.start.line]
 
-                    # find suspicious names
-                    for name in fun_var_names:
-                        if AES.lower() not in name.lower() and IV.lower() not in name.lower() and RSA.lower() not in name.lower() and name in warning_lines:
-                            warning_lines.pop(name)
+            # find suspicious names
+            for name in fun_var_names:
+                if ((AES not in name.lower() and IV not in name.lower() and RSA not in name.lower()) or (name.lower() in not_suspicious)) and (name in warning_lines):
+                    warning_lines.pop(name)
 
-            return warning_lines
+            for key in warning_lines:
+                line_numbers = self.array_to_string(warning_lines[key])
+                message = f"Suspicious name found in the file, may indicate implementation of custom crypto code.\n" + \
+                              "Check for custom code implementation."
+                description = f"Potential usage of custom crypto code in {type_file.name} at lines: {line_numbers}.\n" + \
+                                      f">   {key}\n" + \
+                                      f"reason: {message}"
+                output_results.append(AnalysisResult(description, {Smell.OCC}))
+
+    def find_issue(self, type_file, suspicious_names, not_suspicious, warning_lines, output_results):
+        # find line and build warning_lines dict
+        with open(type_file, 'r') as file:
+            for line_number, line in enumerate(file, start=1):
+                for name in suspicious_names:
+                    if name in line and name.lower() not in not_suspicious:
+                        if warning_lines.get(name) is not None:
+                            warning_lines[name].append(line_number)
+                        else:
+                            warning_lines[name] = [line_number]
+
+        for key in warning_lines:
+            line_numbers = self.array_to_string(warning_lines[key])
+            message = f"Suspicious name found in the file, may indicate implementation of custom crypto code.\n" + \
+                      "Check for custom code implementation."
+            description = f"Potential usage of custom crypto code in {type_file.name} at lines: {line_numbers}.\n" + \
+                          f">   {key}\n" + \
+                          f"reason: {message}"
+            output_results.append(AnalysisResult(description, {Smell.OCC}))
+
+    def array_to_string(self, words):
+        string = ', '.join(map(str, words))
+        return string

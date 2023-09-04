@@ -14,7 +14,7 @@ def decrypt_aes(ciphertext, key):
     return plaintext
 
 # RSA encryption
-def generate_rsa_keypair():
+def private():
     key = RSA.generate(2048)
     private_key = key.export_key()
     public_key = key.publickey().export_key()
@@ -39,7 +39,7 @@ ciphertext_aes = encrypt_aes(plaintext, aes_key)
 decrypted_text_aes = decrypt_aes(ciphertext_aes, aes_key)
 
 # RSA encryption and decryption
-private_key, public_key = generate_rsa_keypair()
+private_key, public_key = private()
 ciphertext_rsa = encrypt_rsa(plaintext, public_key)
 decrypted_text_rsa = decrypt_rsa(ciphertext_rsa, private_key)
 

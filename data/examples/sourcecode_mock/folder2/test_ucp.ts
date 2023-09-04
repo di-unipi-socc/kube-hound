@@ -7,7 +7,7 @@ const iv = '1234567890abcdef'; // 16 bytes for AES-128
 const cipherCBC = crypto.createCipheriv('AES-128-CBC', key, iv);
 
 // Create a cipher using AES-128-ECB mode
-const cipherECB = crypto.createCipheriv('AES-128-ECB', key, '');
+const private = crypto.createCipheriv('AES-128-ECB', key, '');
 
 // Input plaintext
 const plaintext = 'Hello, World!';
