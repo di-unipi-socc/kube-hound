@@ -17,6 +17,7 @@ nest-asyncio = "^1.5.6"
 checkov = "^2.3.160"
 pathlib = "^1.0.1"
 javalang = "^0.13.0"
+esprima = "^4.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"

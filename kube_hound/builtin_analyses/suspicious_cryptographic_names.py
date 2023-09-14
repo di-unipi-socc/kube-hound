@@ -120,14 +120,17 @@ class SuspiciousCryptographicNames(StaticAnalysis):
             for name in fun_var_names:
                 if ((AES not in name.lower() and IV not in name.lower() and RSA not in name.lower()) or (name.lower() in not_suspicious)) and (name in warning_lines):
                     warning_lines.pop(name)
-            for key in warning_lines:
-                line_numbers = self.array_to_string(warning_lines[key])
-                message = f"Suspicious name found in the file, may indicate implementation of custom crypto code.\n" + \
-                          "Check for custom code implementation."
-                description = f"Potential usage of custom crypto code in {type_file.name} at lines: {line_numbers}.\n" + \
-                              f">   {key}\n" + \
-                              f"reason: {message}"
-                output_results.append(AnalysisResult(description, {Smell.OCC}))
+            body = ""
+            if warning_lines:
+                description = f"Potential usage of custom crypto code in {type_file.name}"
+                for key in warning_lines:
+                    line_numbers = self.array_to_string(warning_lines[key])
+                    body =  body + f"-   \"{key}\" at lines: {line_numbers}.\n"
+                message = f"{description}\n" + \
+                          f"{body}" +\
+                          f"reason: Suspicious name found in the file, may indicate implementation of custom crypto code.\n" + \
+                        "Check for custom code implementation."
+                output_results.append(AnalysisResult(message, {Smell.OCC}))
 
     def java_analysis(self, type_file, AES, IV, RSA, not_suspicious, output_results):
         # ANALYSIS BASED ON ABSTRACT TREE CREATION OF THE JAVA FILE
@@ -203,14 +206,17 @@ class SuspiciousCryptographicNames(StaticAnalysis):
                 if ((AES not in name.lower() and IV not in name.lower() and RSA not in name.lower()) or (name.lower() in not_suspicious)) and (name in warning_lines):
                     warning_lines.pop(name)
 
-            for key in warning_lines:
-                line_numbers = self.array_to_string(warning_lines[key])
-                message = f"Suspicious name found in the file, may indicate implementation of custom crypto code.\n" + \
-                              "Check for custom code implementation."
-                description = f"Potential usage of custom crypto code in {type_file.name} at lines: {line_numbers}.\n" + \
-                                      f">   {key}\n" + \
-                                      f"reason: {message}"
-                output_results.append(AnalysisResult(description, {Smell.OCC}))
+            body = ""
+            if warning_lines:
+                description = f"Potential usage of custom crypto code in {type_file.name}"
+                for key in warning_lines:
+                    line_numbers = self.array_to_string(warning_lines[key])
+                    body = body + f"-   \"{key}\" at lines: {line_numbers}.\n"
+                message = f"{description}\n" + \
+                          f"{body}" + \
+                          f"reason: Suspicious name found in the file, may indicate implementation of custom crypto code.\n" + \
+                          "Check for custom code implementation."
+                output_results.append(AnalysisResult(message, {Smell.OCC}))
 
     def find_issue(self, type_file, suspicious_names, not_suspicious, warning_lines, output_results):
         # find line and build warning_lines dict
@@ -223,14 +229,17 @@ class SuspiciousCryptographicNames(StaticAnalysis):
                         else:
                             warning_lines[name] = [line_number]
 
-        for key in warning_lines:
-            line_numbers = self.array_to_string(warning_lines[key])
-            message = f"Suspicious name found in the file, may indicate implementation of custom crypto code.\n" + \
+        body = ""
+        if warning_lines:
+            description = f"Potential usage of custom crypto code in {type_file.name}"
+            for key in warning_lines:
+                line_numbers = self.array_to_string(warning_lines[key])
+                body = body + f"-   \"{key}\" at lines: {line_numbers}.\n"
+            message = f"{description}\n" + \
+                      f"{body}" + \
+                      f"reason: Suspicious name found in the file, may indicate implementation of custom crypto code.\n" + \
                       "Check for custom code implementation."
-            description = f"Potential usage of custom crypto code in {type_file.name} at lines: {line_numbers}.\n" + \
-                          f">   {key}\n" + \
-                          f"reason: {message}"
-            output_results.append(AnalysisResult(description, {Smell.OCC}))
+            output_results.append(AnalysisResult(message, {Smell.OCC}))
 
     def array_to_string(self, words):
         string = ', '.join(map(str, words))
