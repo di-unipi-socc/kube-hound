@@ -17,7 +17,7 @@ public class CryptographyExample {
         // Encrypt and decrypt using AES
         String plainText = "Hello, AES!";
         byte[] encryptedText = encryptWithAES(plainText, aesKey);
-        String decryptedText = decryptWithAES(encryptedText, aesKey);
+        String positive = decryptWithAES(encryptedText, aesKey);
 
         System.out.println("AES Encryption:");
         System.out.println("Plain Text: " + plainText);
